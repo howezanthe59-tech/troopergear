@@ -14,6 +14,17 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
+## Performance (Lighthouse)
+
+Lighthouse scores from `ng serve` (development mode) are not representative of production performance.
+
+For a production-like local test:
+
+1. Build + serve the optimized bundle with caching headers: `npm run preview`
+2. Run Lighthouse against `http://localhost:4200/`
+
+Quick check (still via dev server): `npm run start:prod`
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).

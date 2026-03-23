@@ -12,6 +12,7 @@ const wishlistRoutes = require('./routes/wishlist');
 const profileRoutes = require('./routes/profile');
 
 const app = express();
+const isProd = process.env.NODE_ENV === 'production';
 
 // Middleware
 app.use(cors({
@@ -23,7 +24,18 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, 'uploads'), {
+    // Uploads are not filename-hashed, so keep cache lifetime short.
+    maxAge: isProd ? '7d' : 0,
+    etag: true,
+    lastModified: true,
+    setHeaders: (res) => {
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+  })
+);
 
 // Routes
 app.use('/api/products', productRoutes);
