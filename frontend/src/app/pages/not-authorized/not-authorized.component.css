@@ -1,0 +1,43 @@
+.na-page {
+  min-height: 70vh;
+  background: #f7f6f1;
+  display: flex;
+  align-items: center;
+}
+
+.na-hero {
+  padding: 4rem 0;
+  width: 100%;
+}
+
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1b7a52;
+  border: 1px solid rgba(27, 122, 82, 0.35);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.na-hero h1 {
+  margin: 0.8rem 0 0.5rem;
+  font-size: clamp(2rem, 3vw, 3rem);
+  color: #101312;
+}
+
+.na-hero p {
+  color: #4c4f52;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.na-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

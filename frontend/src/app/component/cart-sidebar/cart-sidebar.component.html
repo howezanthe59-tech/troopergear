@@ -1,0 +1,60 @@
+<!-- Cart Overlay -->
+<div class="cart-overlay" *ngIf="isShowing" (click)="closeBag()" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+  <div class="cart-sidebar glass-effect" (click)="$event.stopPropagation()">
+    <div class="cart-header">
+      <h2 id="cart-title">Your Gear Bag</h2>
+      <button class="close-cart" (click)="closeBag()" aria-label="Close Shopping Cart">×</button>
+    </div>
+
+    <div class="cart-items">
+      <!-- Empty State -->
+      <div *ngIf="itemsInBag.length === 0" class="empty-cart">
+        <div class="empty-icon" aria-hidden="true">🛒</div>
+        <p>Your gear bag is empty</p>
+        <button class="btn btn-primary" (click)="closeBag()">Explore Products</button>
+      </div>
+
+      <!-- Item List -->
+      <div class="cart-item" *ngFor="let item of itemsInBag">
+        <img [src]="getImgPath(item)" [alt]="item['gearData']['name']" class="cart-item-img" loading="lazy" decoding="async" />
+        <div class="cart-item-info">
+          <h3>{{ item['gearData']['name'] }}</h3>
+          <p class="cart-variant" *ngIf="item.variant?.color || item.variant?.size">
+            <span *ngIf="item.variant?.color">Color: {{ item.variant.color }}</span>
+            <span *ngIf="item.variant?.size">Size: {{ item.variant.size }}</span>
+          </p>
+          <p class="cart-price" [attr.aria-label]="'Unit price: $' + getItemPrice(item)">${{ getItemPrice(item) }}</p>
+          <div class="quantity-controls">
+            <button 
+              (click)="removeOne(item)" 
+              [attr.aria-label]="'Decrease quantity of ' + item['gearData']['name']"
+              [disabled]="item['quantity'] <= 1">
+              -
+            </button>
+            <span class="quantity" [attr.aria-label]="'Quantity: ' + item['quantity']">{{ item['quantity'] }}</span>
+            <button 
+              (click)="addOne(item)" 
+              [attr.aria-label]="'Increase quantity of ' + item['gearData']['name']">
+              +
+            </button>
+          </div>
+        </div>
+        <button 
+          class="remove-item" 
+          (click)="deleteItem(item)" 
+          [attr.aria-label]="'Remove ' + item['gearData']['name'] + ' from cart'">
+          🗑️
+        </button>
+      </div>
+    </div>
+
+    <div class="cart-footer" *ngIf="itemsInBag.length > 0">
+      <div class="cart-total">
+        <span>Subtotal</span>
+        <span [attr.aria-label]="'Total amount: $' + formatMoney(bagTotal)">${{ formatMoney(bagTotal) }}</span>
+      </div>
+      <button class="btn btn-primary btn-full" (click)="checkout()">Proceed to Checkout</button>
+      <button class="cart-continue" (click)="closeBag()">Continue Shopping</button>
+    </div>
+  </div>
+</div>

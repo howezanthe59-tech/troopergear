@@ -1,0 +1,158 @@
+<button
+  #openButton
+  type="button"
+  class="a11y-fab"
+  (click)="toggle()"
+  aria-label="Accessibility settings"
+  aria-haspopup="dialog"
+  [attr.aria-expanded]="isOpen"
+  aria-controls="a11y-drawer"
+>
+  <span class="a11y-fab-icon" aria-hidden="true">&#9855;</span>
+</button>
+
+<div class="a11y-overlay" [class.is-open]="isOpen" (click)="close()" aria-hidden="true"></div>
+
+<aside
+  #drawer
+  id="a11y-drawer"
+  class="a11y-drawer"
+  [class.is-open]="isOpen"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="a11y-title"
+  [attr.aria-hidden]="!isOpen"
+  tabindex="-1"
+  (keydown)="onDrawerKeydown($event)"
+>
+  <header class="a11y-header">
+    <div>
+      <h2 id="a11y-title">Accessibility</h2>
+      <p class="a11y-subtitle">Customize text, colors, visibility, and motion.</p>
+    </div>
+    <button type="button" class="a11y-close" (click)="close()" aria-label="Close accessibility panel">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </header>
+
+  <div class="a11y-content" *ngIf="isOpen">
+    <section class="a11y-section" aria-labelledby="a11y-text">
+      <h3 id="a11y-text">Text settings</h3>
+
+      <div class="a11y-stepper">
+        <div class="a11y-stepper-meta">
+          <span class="a11y-label">Font size</span>
+          <span class="a11y-desc">Increase or decrease site text.</span>
+        </div>
+        <div class="a11y-stepper-controls" role="group" aria-label="Font size controls">
+          <button type="button" class="a11y-step-btn" (click)="decreaseFont()" aria-label="Decrease font size">A-</button>
+          <span class="a11y-value" aria-label="Current font size">{{ fontPercent }}%</span>
+          <button type="button" class="a11y-step-btn" (click)="increaseFont()" aria-label="Increase font size">A+</button>
+        </div>
+      </div>
+
+      <label class="a11y-switch">
+        <input type="checkbox" [checked]="prefs.dyslexiaFont" (change)="toggleBoolean('dyslexiaFont')" />
+        <span class="a11y-switch-ui" aria-hidden="true"></span>
+        <span class="a11y-switch-text">
+          <span class="a11y-label">Dyslexia-friendly font</span>
+          <span class="a11y-desc">Uses a more readable font stack.</span>
+        </span>
+      </label>
+
+      <div class="a11y-stepper">
+        <div class="a11y-stepper-meta">
+          <span class="a11y-label">Letter spacing</span>
+          <span class="a11y-desc">Increase spacing between letters.</span>
+        </div>
+        <div class="a11y-stepper-controls" role="group" aria-label="Letter spacing controls">
+          <button type="button" class="a11y-step-btn" (click)="decreaseLetterSpacing()" aria-label="Decrease letter spacing">-</button>
+          <span class="a11y-value" aria-label="Current letter spacing">{{ letterSpacingLabel }}</span>
+          <button type="button" class="a11y-step-btn" (click)="increaseLetterSpacing()" aria-label="Increase letter spacing">+</button>
+        </div>
+      </div>
+
+      <div class="a11y-stepper">
+        <div class="a11y-stepper-meta">
+          <span class="a11y-label">Line height</span>
+          <span class="a11y-desc">Increase spacing between lines.</span>
+        </div>
+        <div class="a11y-stepper-controls" role="group" aria-label="Line height controls">
+          <button type="button" class="a11y-step-btn" (click)="decreaseLineHeight()" aria-label="Decrease line height">-</button>
+          <span class="a11y-value" aria-label="Current line height">{{ lineHeightLabel }}</span>
+          <button type="button" class="a11y-step-btn" (click)="increaseLineHeight()" aria-label="Increase line height">+</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="a11y-section" aria-labelledby="a11y-color">
+      <h3 id="a11y-color">Color &amp; display</h3>
+
+      <label class="a11y-switch">
+        <input type="checkbox" [checked]="prefs.darkMode" (change)="toggleBoolean('darkMode')" />
+        <span class="a11y-switch-ui" aria-hidden="true"></span>
+        <span class="a11y-switch-text">
+          <span class="a11y-label">Dark mode</span>
+          <span class="a11y-desc">Dark background with light text.</span>
+        </span>
+      </label>
+
+      <label class="a11y-switch">
+        <input type="checkbox" [checked]="prefs.highContrast" (change)="toggleBoolean('highContrast')" />
+        <span class="a11y-switch-ui" aria-hidden="true"></span>
+        <span class="a11y-switch-text">
+          <span class="a11y-label">High contrast</span>
+          <span class="a11y-desc">Boosts contrast for readability.</span>
+        </span>
+      </label>
+
+      <label class="a11y-switch">
+        <input type="checkbox" [checked]="prefs.invertColors" (change)="toggleBoolean('invertColors')" />
+        <span class="a11y-switch-ui" aria-hidden="true"></span>
+        <span class="a11y-switch-text">
+          <span class="a11y-label">Invert colors</span>
+          <span class="a11y-desc">Inverts the page colors.</span>
+        </span>
+      </label>
+    </section>
+
+    <section class="a11y-section" aria-labelledby="a11y-visibility">
+      <h3 id="a11y-visibility">Visibility</h3>
+
+      <label class="a11y-switch">
+        <input type="checkbox" [checked]="prefs.highlightLinks" (change)="toggleBoolean('highlightLinks')" />
+        <span class="a11y-switch-ui" aria-hidden="true"></span>
+        <span class="a11y-switch-text">
+          <span class="a11y-label">Highlight links</span>
+          <span class="a11y-desc">Underlines all links.</span>
+        </span>
+      </label>
+
+      <label class="a11y-switch">
+        <input type="checkbox" [checked]="prefs.focusOutline" (change)="toggleBoolean('focusOutline')" />
+        <span class="a11y-switch-ui" aria-hidden="true"></span>
+        <span class="a11y-switch-text">
+          <span class="a11y-label">Enhanced focus outline</span>
+          <span class="a11y-desc">Stronger highlight when navigating by keyboard.</span>
+        </span>
+      </label>
+    </section>
+
+    <section class="a11y-section" aria-labelledby="a11y-motion">
+      <h3 id="a11y-motion">Motion</h3>
+
+      <label class="a11y-switch">
+        <input type="checkbox" [checked]="prefs.reduceMotion" (change)="toggleBoolean('reduceMotion')" />
+        <span class="a11y-switch-ui" aria-hidden="true"></span>
+        <span class="a11y-switch-text">
+          <span class="a11y-label">Reduce animations</span>
+          <span class="a11y-desc">Disables transitions and motion effects.</span>
+        </span>
+      </label>
+    </section>
+
+    <div class="a11y-footer">
+      <button type="button" class="a11y-reset" (click)="reset()">Reset settings</button>
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,358 @@
+<main class="admin-shell">
+  <div class="toast-stack" aria-live="polite" aria-atomic="true">
+    <div class="toast success" *ngIf="successMessage">
+      <div class="toast-icon" aria-hidden="true">✓</div>
+      <div class="toast-body">
+        <div class="toast-title">Success</div>
+        <div class="toast-text">{{ successMessage }}</div>
+      </div>
+      <button type="button" class="toast-close" (click)="dismissToast()" aria-label="Dismiss message">×</button>
+    </div>
+    <div class="toast error" *ngIf="errorMessage">
+      <div class="toast-icon" aria-hidden="true">!</div>
+      <div class="toast-body">
+        <div class="toast-title">Attention</div>
+        <div class="toast-text">{{ errorMessage }}</div>
+      </div>
+      <button type="button" class="toast-close" (click)="dismissToast()" aria-label="Dismiss message">×</button>
+    </div>
+  </div>
+
+  <aside class="sidebar" aria-label="Admin navigation">
+    <div class="sidebar-inner">
+      <div class="sidebar-brand">
+        <div class="brand-badge">TG</div>
+        <div>
+          <div class="brand-title">TrooperGear</div>
+          <div class="brand-sub">Admin Console</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item" [class.active]="activeTab === 'overview'" (click)="setTab('overview')">Overview</button>
+        <button type="button" class="nav-item" [class.active]="activeTab === 'products'" (click)="setTab('products')">Products</button>
+        <button type="button" class="nav-item" [class.active]="activeTab === 'orders'" (click)="setTab('orders')">Orders</button>
+        <button type="button" class="nav-item" [class.active]="activeTab === 'customers'" (click)="setTab('customers')">Customers</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="profile-pill">
+          <div class="profile-avatar" aria-hidden="true">{{ adminName.slice(0, 1).toUpperCase() }}</div>
+          <div class="profile-meta">
+            <div class="profile-name">{{ adminName }}</div>
+            <div class="profile-sub">Administrator</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="workspace">
+    <header class="workspace-top">
+      <div class="welcome">
+        <h1>{{ headerTitle }}</h1>
+        <p>{{ headerSubtitle }}</p>
+      </div>
+      <div class="top-actions">
+        <ng-container *ngIf="activeTab === 'overview' || activeTab === 'products'">
+          <button type="button" class="btn btn-outline" (click)="loadProducts()" [disabled]="isLoading">
+            <span class="btn-spinner" *ngIf="isLoading" aria-hidden="true"></span>
+            Refresh
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'orders'">
+          <button type="button" class="btn btn-outline" (click)="loadOrders()" [disabled]="isOrdersLoading">
+            <span class="btn-spinner" *ngIf="isOrdersLoading" aria-hidden="true"></span>
+            Refresh Orders
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'customers'">
+          <button type="button" class="btn btn-outline" (click)="loadCustomers()" [disabled]="isCustomersLoading">
+            <span class="btn-spinner" *ngIf="isCustomersLoading" aria-hidden="true"></span>
+            Refresh Customers
+          </button>
+        </ng-container>
+      </div>
+    </header>
+
+    <section class="stats-row" *ngIf="activeTab === 'overview' || activeTab === 'products'">
+      <div class="stat-tile">
+        <div class="tile-label">Total Products</div>
+        <div class="tile-value">{{ totalProducts }}</div>
+        <div class="tile-sub">All time</div>
+      </div>
+      <div class="stat-tile">
+        <div class="tile-label">Categories</div>
+        <div class="tile-value">{{ categoryCount }}</div>
+        <div class="tile-sub">Active groups</div>
+      </div>
+      <div class="stat-tile revenue">
+        <div class="tile-label">Low Stock</div>
+        <div class="tile-value">{{ lowStockCount }}</div>
+        <div class="tile-sub">≤ 5 units</div>
+      </div>
+    </section>
+
+    <section class="content-grid" *ngIf="activeTab === 'overview'">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Quick Actions</h2>
+            <p>Jump to product management, orders, and customers.</p>
+          </div>
+        </div>
+
+        <div class="overview-actions">
+          <button type="button" class="quick-card" (click)="setTab('products')">
+            <div class="quick-title">Products</div>
+            <div class="quick-sub">Create, edit, and manage images</div>
+          </button>
+          <button type="button" class="quick-card" (click)="setTab('orders')">
+            <div class="quick-title">Orders</div>
+            <div class="quick-sub">Track purchases and status</div>
+          </button>
+          <button type="button" class="quick-card" (click)="setTab('customers')">
+            <div class="quick-title">Customers</div>
+            <div class="quick-sub">See contact information</div>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Recent Products</h2>
+            <p>Latest items in your catalog.</p>
+          </div>
+          <div class="panel-head-actions">
+            <button type="button" class="btn btn-outline" (click)="setTab('products')">Open Products</button>
+          </div>
+        </div>
+
+        <div class="admin-state" *ngIf="isLoading">
+          <div class="skeleton-row" *ngFor="let i of [0,1,2,3,4]"></div>
+        </div>
+
+        <div class="overview-list" *ngIf="!isLoading && products.length > 0">
+          <article class="mini-row" *ngFor="let p of products | slice:0:5; trackBy: trackByProductId">
+            <div class="thumb" *ngIf="p.image"><img [src]="media.productImageUrl(p.image)" [alt]="p.name" loading="lazy" decoding="async" /></div>
+            <div class="thumb placeholder" *ngIf="!p.image"></div>
+            <div class="mini-main">
+              <div class="mini-title">{{ p.name }}</div>
+              <div class="mini-sub">{{ p.category }} • ${{ p.price }}</div>
+            </div>
+          </article>
+        </div>
+
+        <div class="admin-empty" *ngIf="!isLoading && products.length === 0">No products found.</div>
+      </section>
+    </section>
+
+    <section class="content-grid" *ngIf="activeTab === 'products'">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Products Control</h2>
+            <p>Search products and manage your catalog.</p>
+          </div>
+          <div class="panel-head-actions">
+            <button type="button" class="btn btn-outline" (click)="startCreate()">Reset</button>
+          </div>
+        </div>
+
+        <div class="panel-tools">
+          <div class="tool">
+            <label for="admin-search">Search</label>
+            <input
+              id="admin-search"
+              class="login-input"
+              type="search"
+              placeholder="Search by name, category, badge..."
+              [(ngModel)]="searchTerm"
+              name="search"
+            />
+          </div>
+        </div>
+
+        <div class="admin-state" *ngIf="isLoading">
+          <div class="skeleton-row" *ngFor="let i of [0,1,2,3,4,5]"></div>
+        </div>
+
+        <div class="product-cards" *ngIf="!isLoading && filteredProducts.length > 0">
+          <article
+            class="product-card-admin table-row"
+            *ngFor="let p of filteredProducts; let i = index; trackBy: trackByProductId"
+            [style.--i]="i"
+          >
+            <div class="p-left">
+              <div class="thumb lg" *ngIf="p.image">
+                <img [src]="media.productImageUrl(p.image)" [alt]="p.name" loading="lazy" decoding="async" />
+              </div>
+              <div class="thumb lg placeholder" *ngIf="!p.image"></div>
+
+              <div class="p-main">
+                <div class="p-title-row">
+                  <h3 class="p-name">{{ p.name }}</h3>
+                  <span class="admin-badge" *ngIf="p.badge">{{ p.badge }}</span>
+                </div>
+                <div class="p-meta">
+                  <span class="pill">{{ p.category }}</span>
+                  <span class="meta-dot">•</span>
+                  <span class="meta-kpi">${{ p.price }}</span>
+                  <span class="meta-dot">•</span>
+                  <span class="meta-kpi" [class.low]="p.stock <= 5">Stock {{ p.stock }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-right">
+              <div class="action-group">
+                <button type="button" class="action-btn edit" (click)="startEdit(p)" [attr.aria-label]="'Edit ' + p.name" title="Edit">✎</button>
+                <button type="button" class="action-btn danger" (click)="deleteProduct(p)" [attr.aria-label]="'Delete ' + p.name" title="Delete">🗑</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="admin-empty" *ngIf="!isLoading && filteredProducts.length === 0">No products found.</div>
+      </section>
+
+      <section class="panel form-panel">
+        <div class="panel-head">
+          <div>
+            <h2>{{ editingId ? 'Edit Product' : 'Add Product' }}</h2>
+            <p>{{ editingId ? 'Update details and replace the image.' : 'Create a new product with an image.' }}</p>
+          </div>
+        </div>
+
+        <form class="admin-form" (submit)="$event.preventDefault()">
+          <div class="form-group">
+            <label for="prod-name">Name</label>
+            <input id="prod-name" class="login-input" [(ngModel)]="form.name" name="name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="prod-category">Category</label>
+            <input id="prod-category" class="login-input" [(ngModel)]="form.category" name="category" required />
+          </div>
+
+          <div class="form-group">
+            <label for="prod-description">Description</label>
+            <textarea id="prod-description" class="login-input" rows="4" [(ngModel)]="form.description" name="description"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prod-price">Price</label>
+              <input id="prod-price" type="number" class="login-input" [(ngModel)]="form.price" name="price" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="prod-stock">Stock</label>
+              <input id="prod-stock" type="number" class="login-input" [(ngModel)]="form.stock" name="stock" min="0" step="1" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prod-badge">Badge</label>
+              <input id="prod-badge" class="login-input" [(ngModel)]="form.badge" name="badge" placeholder="Bestseller" />
+            </div>
+            <div class="form-group">
+              <label for="prod-image-file">Image</label>
+              <input id="prod-image-file" type="file" class="login-input" accept="image/*" (change)="onFileSelected($event)" />
+            </div>
+          </div>
+
+          <div class="admin-image-preview" *ngIf="getImagePreviewUrl()">
+            <img [src]="getImagePreviewUrl()" [alt]="form.name || 'Product image preview'" loading="eager" decoding="async" />
+          </div>
+
+          <div class="admin-form-actions">
+            <button type="submit" class="btn btn-primary login-submit" (click)="submit()">
+              {{ editingId ? 'Save Changes' : 'Add Product' }}
+            </button>
+            <button *ngIf="editingId" type="button" class="btn btn-outline" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      </section>
+    </section>
+
+    <section class="content-grid single" *ngIf="activeTab === 'orders'">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>All Orders</h2>
+            <p>Order ID, customer, items, status, and totals.</p>
+          </div>
+        </div>
+
+        <div class="admin-state" *ngIf="isOrdersLoading">
+          <div class="skeleton-row" *ngFor="let i of [0,1,2,3,4,5]"></div>
+        </div>
+
+        <div class="admin-empty error" *ngIf="!isOrdersLoading && ordersErrorMessage">{{ ordersErrorMessage }}</div>
+
+        <div class="data-table" *ngIf="!isOrdersLoading && !ordersErrorMessage && orders.length > 0">
+          <div class="data-head orders">
+            <div>Order ID</div>
+            <div>User ID</div>
+            <div>Items purchased</div>
+            <div>Date</div>
+            <div>Status</div>
+            <div>Total</div>
+          </div>
+
+          <div class="data-row orders" *ngFor="let o of orders">
+            <div class="cell" data-label="Order ID">#{{ o.id }}</div>
+            <div class="cell" data-label="User ID">{{ o.user_id }}</div>
+            <div class="cell items" data-label="Items purchased">{{ o.items_purchased || '—' }}</div>
+            <div class="cell" data-label="Date">{{ o.created_at | date:'mediumDate' }}</div>
+            <div class="cell" data-label="Status"><span class="status-pill">{{ o.status }}</span></div>
+            <div class="cell total" data-label="Total">${{ o.total }}</div>
+          </div>
+        </div>
+
+        <div class="admin-empty" *ngIf="!isOrdersLoading && !ordersErrorMessage && orders.length === 0">
+          No orders available at this time.
+        </div>
+      </section>
+    </section>
+
+    <section class="content-grid single" *ngIf="activeTab === 'customers'">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Customers</h2>
+            <p>Customer name, email, and phone number.</p>
+          </div>
+        </div>
+
+        <div class="admin-state" *ngIf="isCustomersLoading">
+          <div class="skeleton-row" *ngFor="let i of [0,1,2,3,4,5]"></div>
+        </div>
+
+        <div class="admin-empty error" *ngIf="!isCustomersLoading && customersErrorMessage">{{ customersErrorMessage }}</div>
+
+        <div class="data-table" *ngIf="!isCustomersLoading && !customersErrorMessage && customers.length > 0">
+          <div class="data-head customers">
+            <div>Customer name</div>
+            <div>Email</div>
+            <div>Phone number</div>
+          </div>
+
+          <div class="data-row customers" *ngFor="let c of customers">
+            <div class="cell" data-label="Customer name">{{ c.name }}</div>
+            <div class="cell" data-label="Email">{{ c.email }}</div>
+            <div class="cell" data-label="Phone number">{{ c.phone_number || '—' }}</div>
+          </div>
+        </div>
+
+        <div class="admin-empty" *ngIf="!isCustomersLoading && !customersErrorMessage && customers.length === 0">
+          No customers found.
+        </div>
+      </section>
+    </section>
+  </section>
+</main>

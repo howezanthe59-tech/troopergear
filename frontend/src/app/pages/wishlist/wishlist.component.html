@@ -1,0 +1,55 @@
+<main class="wishlist-page">
+  <section class="wishlist-hero">
+    <div class="container">
+      <span class="page-badge">Wishlist</span>
+      <h1>Your Saved Gear</h1>
+      <p>Keep track of the items you love and come back anytime.</p>
+      <div class="wishlist-cta">
+        <a routerLink="/products" class="btn btn-primary">Browse Products</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wishlist-content">
+    <div class="container">
+      <div class="wishlist-toolbar">
+        <button class="btn btn-outline" (click)="loadWishlist()" [disabled]="isLoading">Refresh</button>
+        <button class="btn btn-secondary" (click)="clearAll()" [disabled]="isLoading || items.length === 0">Clear All</button>
+      </div>
+
+      <div class="wishlist-state" *ngIf="isLoading">
+        <p>Loading your wishlist...</p>
+      </div>
+
+      <div class="wishlist-state error" *ngIf="!isLoading && errorMessage">
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      <div class="wishlist-empty" *ngIf="!isLoading && items.length === 0 && !errorMessage">
+        <h2>No items yet</h2>
+        <p>Add products to your wishlist and they will show up here.</p>
+        <a routerLink="/products" class="btn btn-secondary">Start Saving</a>
+      </div>
+
+      <div class="wishlist-grid" *ngIf="!isLoading && items.length > 0">
+        <article class="wishlist-card" *ngFor="let item of items">
+          <div class="wishlist-media">
+            <span class="wishlist-badge" *ngIf="item.badge">{{ item.badge }}</span>
+            <img [src]="media.productImageUrl(item.image)" [alt]="item.name" loading="lazy" decoding="async" />
+          </div>
+          <div class="wishlist-info">
+            <div class="wishlist-meta">
+              <span class="wishlist-category">{{ item.category }}</span>
+              <span class="wishlist-price">${{ item.price }}</span>
+            </div>
+            <h3>{{ item.name }}</h3>
+            <div class="wishlist-actions">
+              <a class="btn btn-outline" routerLink="/products">View Product</a>
+              <button class="btn btn-secondary" (click)="removeItem(item.id)">Remove</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>

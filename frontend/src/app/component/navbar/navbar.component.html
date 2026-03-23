@@ -1,0 +1,106 @@
+<nav class="navbar glass-effect" [class.scrolled]="isScrolled" role="navigation" aria-label="Main Navigation">
+  <div class="container">
+    <div class="nav-backdrop" *ngIf="isMenuOpen" (click)="isMenuOpen = false" aria-hidden="true"></div>
+
+    <a class="nav-brand" routerLink="/" aria-label="TrooperGear Home" (click)="isMenuOpen = false">
+      <img src="/assets/media/Logo.png" alt="" aria-hidden="true" class="logo" loading="eager" decoding="async" fetchpriority="high" />
+      <div>
+        <span class="brand-name">TrooperGear</span>
+        <span class="tagline">Adventure Awaits</span>
+      </div>
+    </a>
+
+    <ul class="nav-menu" [class.active]="isMenuOpen" role="menubar" id="mobile-menu">
+      <li role="none">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="isMenuOpen = false" role="menuitem">Home</a>
+      </li>
+      <li role="none">
+        <a routerLink="/products" routerLinkActive="active" (click)="isMenuOpen = false" role="menuitem">Products</a>
+      </li>
+      <li role="none">
+        <a routerLink="/about" routerLinkActive="active" (click)="isMenuOpen = false" role="menuitem">About Us</a>
+      </li>
+      <li role="none">
+        <a routerLink="/blog" routerLinkActive="active" (click)="isMenuOpen = false" role="menuitem">Blog</a>
+      </li>
+      <li role="none">
+        <a routerLink="/contact" routerLinkActive="active" (click)="isMenuOpen = false" role="menuitem">Contact</a>
+      </li>
+    </ul>
+
+    <button
+      class="hamburger"
+      [class.active]="isMenuOpen"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMenuOpen"
+      aria-controls="mobile-menu"
+      aria-label="Toggle Navigation Menu"
+      type="button"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="nav-actions" [class.menu-open]="isMenuOpen">
+      <div class="nav-action-group" role="group" aria-label="Wishlist, cart, and account">
+        <a
+          class="nav-action-btn nav-wishlist-btn"
+          routerLink="/wishlist"
+          aria-label="Open Wishlist"
+          title="Wishlist"
+          (click)="isMenuOpen = false"
+        >
+          <svg class="nav-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"
+            />
+          </svg>
+        </a>
+
+        <button class="nav-action-btn nav-cart-btn" (click)="openCart()" aria-label="Open Shopping Cart" title="Cart" type="button">
+          <svg class="nav-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="9" cy="21" r="1" />
+            <circle cx="20" cy="21" r="1" />
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+          </svg>
+          <span class="nav-cart-label" aria-hidden="true">Cart</span>
+          <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+        </button>
+
+        <div class="nav-user">
+          <button
+            class="nav-action-btn nav-account-btn"
+            (click)="toggleUserMenu()"
+            type="button"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="isLoggedIn ? isUserMenuOpen : null"
+            [attr.aria-label]="isLoggedIn ? 'Open account menu' : 'Account'"
+            [class.open]="isLoggedIn && isUserMenuOpen"
+            [title]="isLoggedIn ? 'Account' : 'Sign in'"
+          >
+            <span class="nav-avatar" *ngIf="isLoggedIn" aria-hidden="true">{{ displayName.charAt(0) }}</span>
+            <svg *ngIf="!isLoggedIn" class="nav-action-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <path d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+            </svg>
+            <svg class="nav-account-chev" *ngIf="isLoggedIn" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <path d="M5 7.5 10 12.5 15 7.5" />
+            </svg>
+          </button>
+
+          <div
+            class="nav-user-menu"
+            role="menu"
+            [class.open]="isLoggedIn && isUserMenuOpen"
+            [attr.aria-hidden]="!(isLoggedIn && isUserMenuOpen)"
+          >
+            <a role="menuitem" *ngIf="userRole === 'admin'" routerLink="/admin" (click)="closeUserMenu(); isMenuOpen = false">Admin Dashboard</a>
+            <a role="menuitem" *ngIf="userRole !== 'admin'" routerLink="/profile" (click)="closeUserMenu(); isMenuOpen = false">Profile</a>
+            <button role="menuitem" type="button" (click)="logout()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

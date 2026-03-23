@@ -1,0 +1,14 @@
+<div class="tg-cc" *ngIf="visible$ | async" role="dialog" aria-live="polite" aria-label="Cookie consent">
+  <div class="tg-cc__card glass-effect">
+    <p class="tg-cc__message">
+      This website uses cookies to store information, improve your experience, and analyze traffic. By using our website,
+      you agree to our <a routerLink="/privacy" class="tg-cc__link">Privacy Policy</a> and cookie usage.
+    </p>
+
+    <div class="tg-cc__actions" role="group" aria-label="Cookie consent actions">
+      <button type="button" class="btn btn-primary tg-cc__btn" (click)="acceptCookies()">Accept Cookies</button>
+      <button type="button" class="btn btn-outline tg-cc__btn" (click)="browseSettings()">Browse Settings</button>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,128 @@
+<article [ngClass]="getCardClasses()" *ngIf="data">
+  <div class="product-media">
+    <div class="product-badge" *ngIf="data['badge']" role="status">{{ data['badge'] }}</div>
+    <img
+      [src]="media.productImageUrl(getImageSrc())"
+      [alt]="data['name']"
+      loading="lazy"
+      decoding="async"
+      [class.footwear-image]="isFootwear()"
+      [class.summitlite-image]="data?.name === 'SummitLite Trail Backpack'"
+      [class.riverstone-image]="data?.name === 'Riverstone DryPack 35L'"
+      [class.summitguard-image]="data?.name === 'SummitGuard Hiking Shoe'"
+    />
+    <div class="product-media-overlay" *ngIf="!minimal">
+      <button
+        type="button"
+        class="quick-view-btn"
+        (click)="onViewMore()"
+        [attr.aria-label]="'Quick view ' + data['name']">
+        Quick View <span aria-hidden="true">&#8594;</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="product-body">
+    <div class="product-meta-row">
+      <span class="product-type" *ngIf="data['type']">{{ data['type'] }}</span>
+      <span *ngIf="!minimal" class="product-price" [attr.aria-label]="'Price: $' + data['price']">${{ data['price'] }}</span>
+    </div>
+    <h3>{{ data['name'] }}</h3>
+    <p class="product-description" *ngIf="data['description'] && !minimal">{{ data['description'] }}</p>
+
+    <div class="color-options" *ngIf="!minimal && isFootwear() && hasFootwearOptions()">
+      <span class="color-label">Color:</span>
+      <div class="color-swatches" role="group" aria-label="Choose shoe color">
+        <button
+          *ngFor="let c of getFootwearColors()"
+          type="button"
+          class="swatch"
+          [class.active]="selectedColor === c"
+          (click)="setColor(c)">
+          {{ c }}
+        </button>
+      </div>
+    </div>
+    <div class="color-options" *ngIf="!minimal && hasBackpackOptions()">
+      <span class="color-label">Color:</span>
+      <div class="color-swatches" role="group" aria-label="Choose backpack color">
+        <button type="button" class="swatch" [class.active]="selectedBagColor === 'Green'" (click)="setBagColor('Green')">Green</button>
+        <button type="button" class="swatch" [class.active]="selectedBagColor === 'Black'" (click)="setBagColor('Black')">Black</button>
+      </div>
+    </div>
+
+    <div class="product-actions" *ngIf="!minimal">
+      <button
+        *ngIf="!isFootwear()"
+        type="button"
+        class="btn-add-cart"
+        (click)="onAddToCart()"
+        [attr.aria-label]="'Add ' + data['name'] + ' to cart'">
+        + Add to Cart
+      </button>
+      <button
+        *ngIf="isFootwear()"
+        type="button"
+        class="btn-add-cart"
+        (click)="onViewMore()"
+        [attr.aria-label]="'Select size and color for ' + data['name']"> + Add to Cart </button>
+      <button
+        type="button"
+        class="btn-icon"
+        (click)="onViewMore()"
+        [attr.aria-label]="'View more details for ' + data['name']">&#8594;</button>
+    </div>
+
+    <div class="product-actions minimal" *ngIf="minimal">
+      <button
+        type="button"
+        class="btn-view-more"
+        (click)="onViewMore()"
+        [attr.aria-label]="'View more details for ' + data['name']">
+        View Details
+      </button>
+    </div>
+  </div>
+
+  <!-- Product Details Popup (Modal) -->
+  <div class="modal-overlay" *ngIf="popupMode === 'internal' && showPopup" (click)="togglePopup()" role="dialog" aria-modal="true" [attr.aria-labelledby]="'modal-title-' + data['id']">
+    <div class="modal-content glass-effect" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="togglePopup()" aria-label="Close details">&times;</button>
+      
+      <div class="modal-grid">
+        <div class="modal-image-side">
+          <div class="modal-badge-new" *ngIf="data['badge']">NEW</div>
+          <img [src]="media.productImageUrl(getImageSrc())" [alt]="data['name']" loading="eager" decoding="async" />
+        </div>
+        <div class="modal-info-side">
+          <span class="modal-meta">{{ data['type'] }}</span>
+          <h2 [id]="'modal-title-' + data['id']">{{ data['name'] }}</h2>
+          <p class="modal-desc">{{ data['description'] }}</p>
+          
+          <ul class="modal-features">
+            <li *ngIf="data['capacity']"><span>&#10003;</span> {{ data['capacity'] }}L capacity</li>
+            <li *ngIf="data['type']"><span>&#10003;</span> Premium {{ data['type'] }} build</li>
+            <li><span>&#10003;</span> Weather-resistant material</li>
+            <li><span>&#10003;</span> Lifetime warranty</li>
+          </ul>
+
+          <div class="modal-footer-row">
+            <span class="modal-price">${{ data['price'] }}</span>
+            <div class="modal-actions">
+              <button *ngIf="!minimal && !isFootwear()" class="btn btn-primary modal-btn-cart" (click)="onAddToCart(); togglePopup()" [attr.aria-label]="'Add ' + data['name'] + ' to cart'">
+                Add to Cart
+              </button>
+              <button *ngIf="isLoggedIn" class="btn btn-outline modal-btn-wishlist" (click)="onAddToWishlist()" [attr.aria-label]="'Add ' + data['name'] + ' to wishlist'">
+                &#10084; Wishlist
+              </button>
+              <a *ngIf="!isLoggedIn" class="btn btn-outline modal-btn-wishlist" routerLink="/login" [attr.aria-label]="'Sign in to save ' + data['name']">
+                &#10084; Wishlist
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+

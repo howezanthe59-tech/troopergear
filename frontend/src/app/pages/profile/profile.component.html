@@ -1,0 +1,319 @@
+<main class="profile-shell">
+  <div class="toast-stack" aria-live="polite" aria-atomic="true" *ngIf="toastMessage">
+    <div class="toast" [class.success]="toastType === 'success'" [class.error]="toastType === 'error'">
+      <div class="toast-icon" aria-hidden="true">{{ toastType === 'success' ? '✓' : '!' }}</div>
+      <div class="toast-body">
+        <div class="toast-title">{{ toastType === 'success' ? 'Success' : 'Attention' }}</div>
+        <div class="toast-text">{{ toastMessage }}</div>
+      </div>
+      <button type="button" class="toast-close" (click)="dismissToast()" aria-label="Dismiss message">×</button>
+    </div>
+  </div>
+
+  <section class="profile-hero" aria-label="Profile header">
+    <div class="container hero-row">
+      <div>
+        <span class="page-badge">Profile</span>
+        <h1>{{ me?.name || (authService.getUserName() || 'Trooper Member') }}</h1>
+        <p>Manage your account and saved addresses.</p>
+      </div>
+      <div class="hero-actions">
+        <a routerLink="/wishlist" class="btn btn-outline">Wishlist</a>
+        <a routerLink="/products" class="btn btn-secondary">Shop</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="profile-content">
+    <div class="container dashboard-grid">
+      <aside class="sidebar" aria-label="Profile navigation">
+        <div class="sidebar-inner">
+          <div class="profile-pill">
+            <div class="profile-avatar" aria-hidden="true">{{ (me?.name || 'T').slice(0, 1).toUpperCase() }}</div>
+            <div class="profile-meta">
+              <div class="profile-name">{{ me?.name || 'Trooper Member' }}</div>
+              <div class="profile-sub">{{ me?.email || 'Signed in' }}</div>
+            </div>
+          </div>
+
+          <nav class="sidebar-nav">
+            <button type="button" class="nav-item" [class.active]="activeTab === 'account'" (click)="setTab('account')">
+              <span class="nav-ico" aria-hidden="true">👤</span>
+              <span class="nav-copy">
+                <span class="nav-text">Manage Account</span>
+                <span class="nav-sub">Profile &amp; security</span>
+              </span>
+            </button>
+            <button type="button" class="nav-item" [class.active]="activeTab === 'address'" (click)="setTab('address')">
+              <span class="nav-ico" aria-hidden="true">📍</span>
+              <span class="nav-copy">
+                <span class="nav-text">Address</span>
+                <span class="nav-sub">Delivery locations</span>
+              </span>
+            </button>
+          </nav>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <section class="kpi-row" aria-label="Account overview">
+          <div class="kpi-tile" [class.loading]="isStatsLoading">
+          <div class="kpi-top">
+            <div class="kpi-icon" aria-hidden="true">📦</div>
+            <div class="kpi-meta">
+              <div class="kpi-label">Orders</div>
+              <div class="kpi-value">{{ isStatsLoading ? '—' : orderCount }}</div>
+            </div>
+          </div>
+            <div class="kpi-sub" *ngIf="!isStatsLoading && lastOrder">Last: {{ lastOrder.status }} • ${{ lastOrder.total }}</div>
+            <div class="kpi-sub" *ngIf="!isStatsLoading && !lastOrder">No recent orders</div>
+          </div>
+
+          <a class="kpi-tile link" routerLink="/wishlist" [class.loading]="isStatsLoading">
+            <div class="kpi-top">
+              <div class="kpi-icon" aria-hidden="true">❤</div>
+              <div class="kpi-meta">
+                <div class="kpi-label">Wishlist</div>
+                <div class="kpi-value">{{ isStatsLoading ? '—' : wishlistCount }}</div>
+              </div>
+            </div>
+            <div class="kpi-sub">Saved items</div>
+          </a>
+
+          <button type="button" class="kpi-tile link" (click)="setTab('address')" [class.loading]="isStatsLoading">
+            <div class="kpi-top">
+              <div class="kpi-icon" aria-hidden="true">📍</div>
+              <div class="kpi-meta">
+                <div class="kpi-label">Addresses</div>
+                <div class="kpi-value">{{ isStatsLoading ? '—' : addressCount }}</div>
+              </div>
+            </div>
+            <div class="kpi-sub">Delivery locations</div>
+          </button>
+        </section>
+
+        <section class="account-grid" *ngIf="activeTab === 'account'">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Personal Information</h2>
+                <p>Update your name, email, and phone number.</p>
+              </div>
+            </div>
+
+            <div class="panel-body" *ngIf="isLoading">
+              <div class="skeleton-row" *ngFor="let i of [0,1,2,3,4]"></div>
+            </div>
+
+            <form class="form-grid" *ngIf="!isLoading" (submit)="$event.preventDefault()">
+              <div class="form-group">
+                <label for="pf-name">Full Name</label>
+                <input id="pf-name" class="login-input" [(ngModel)]="accountForm.name" name="name" required />
+              </div>
+              <div class="form-group">
+                <label for="pf-email">Email Address</label>
+                <input id="pf-email" type="email" class="login-input" [(ngModel)]="accountForm.email" name="email" required />
+              </div>
+              <div class="form-group">
+                <label for="pf-phone">Phone Number</label>
+                <input id="pf-phone" class="login-input" [(ngModel)]="accountForm.phone_number" name="phone_number" placeholder="+1 (876) 555-0199" />
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" (click)="saveAccount()">Save Changes</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="panel security-panel">
+            <div class="panel-head">
+              <div>
+                <h2>Security</h2>
+                <p>Change your password (8+ characters).</p>
+              </div>
+            </div>
+
+            <form class="form-grid" (submit)="$event.preventDefault()">
+              <div class="form-group">
+                <label for="pf-current">Current Password</label>
+                <div class="input-row">
+                  <input id="pf-current" class="login-input" [type]="passwordForm.showCurrent ? 'text' : 'password'" [(ngModel)]="passwordForm.current" name="currentPassword" />
+                  <button
+                    type="button"
+                    class="toggle-btn"
+                    (click)="passwordForm.showCurrent = !passwordForm.showCurrent"
+                    [attr.aria-label]="passwordForm.showCurrent ? 'Hide password' : 'Show password'"
+                    [attr.title]="passwordForm.showCurrent ? 'Hide password' : 'Show password'"
+                  >
+                    <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                    <span class="sr-only">{{ passwordForm.showCurrent ? 'Hide password' : 'Show password' }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pf-next">New Password</label>
+                <div class="input-row">
+                  <input id="pf-next" class="login-input" [type]="passwordForm.showNext ? 'text' : 'password'" [(ngModel)]="passwordForm.next" name="newPassword" />
+                  <button
+                    type="button"
+                    class="toggle-btn"
+                    (click)="passwordForm.showNext = !passwordForm.showNext"
+                    [attr.aria-label]="passwordForm.showNext ? 'Hide password' : 'Show password'"
+                    [attr.title]="passwordForm.showNext ? 'Hide password' : 'Show password'"
+                  >
+                    <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                    <span class="sr-only">{{ passwordForm.showNext ? 'Hide password' : 'Show password' }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pf-confirm">Confirm New Password</label>
+                <div class="input-row">
+                  <input id="pf-confirm" class="login-input" [type]="passwordForm.showConfirm ? 'text' : 'password'" [(ngModel)]="passwordForm.confirm" name="confirmPassword" />
+                  <button
+                    type="button"
+                    class="toggle-btn"
+                    (click)="passwordForm.showConfirm = !passwordForm.showConfirm"
+                    [attr.aria-label]="passwordForm.showConfirm ? 'Hide password' : 'Show password'"
+                    [attr.title]="passwordForm.showConfirm ? 'Hide password' : 'Show password'"
+                  >
+                    <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                    <span class="sr-only">{{ passwordForm.showConfirm ? 'Hide password' : 'Show password' }}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-outline" (click)="savePassword()">Update Password</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <div class="panel" *ngIf="activeTab === 'address'">
+          <div class="panel-head">
+            <div>
+              <h2>Address</h2>
+              <p>Add, edit, or remove your delivery addresses.</p>
+            </div>
+            <div class="panel-head-actions">
+              <button type="button" class="btn btn-outline" (click)="startAddAddress()">Add Address</button>
+            </div>
+          </div>
+
+          <div class="panel-body" *ngIf="isAddressesLoading">
+            <div class="skeleton-row" *ngFor="let i of [0,1,2,3,4]"></div>
+          </div>
+
+          <div class="empty" *ngIf="!isAddressesLoading && addresses.length === 0">
+            No addresses yet. Click <strong>Add Address</strong> to create one.
+          </div>
+
+          <div class="address-layout" *ngIf="!isAddressesLoading && addresses.length > 0">
+            <div class="cards address-list">
+              <div
+                class="card address-card"
+                *ngFor="let a of addresses"
+                role="button"
+                tabindex="0"
+                [class.active]="selectedAddressId === a.id"
+                (click)="selectAddress(a)"
+                (keydown.enter)="selectAddress(a)"
+              >
+                <div class="card-main">
+                  <div class="card-title-row">
+                    <div class="card-title">{{ a.street_address }}</div>
+                    <span class="chip" *ngIf="a.is_default">Default</span>
+                  </div>
+                  <div class="card-sub">{{ a.city }}, {{ a.parish_state }} • {{ a.country }} <span *ngIf="a.postal_code">• {{ a.postal_code }}</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="address-detail">
+              <div class="detail-head">
+                <div class="subhead">Address Details</div>
+                <div class="detail-actions" *ngIf="selectedAddress">
+                  <button type="button" class="btn btn-outline" (click)="startEditAddress(selectedAddress)">Edit</button>
+                  <button type="button" class="btn btn-secondary danger" (click)="deleteAddress(selectedAddress)">Delete</button>
+                </div>
+              </div>
+
+              <div class="empty" *ngIf="!selectedAddress">Select an address to view full details.</div>
+
+              <div class="detail-body" *ngIf="selectedAddress">
+                <div class="detail-row">
+                  <span class="detail-label">Street</span>
+                  <span class="detail-value">{{ selectedAddress.street_address }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">City</span>
+                  <span class="detail-value">{{ selectedAddress.city }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Parish/State</span>
+                  <span class="detail-value">{{ selectedAddress.parish_state }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Country</span>
+                  <span class="detail-value">{{ selectedAddress.country }}</span>
+                </div>
+                <div class="detail-row" *ngIf="selectedAddress.postal_code">
+                  <span class="detail-label">Postal Code</span>
+                  <span class="detail-value">{{ selectedAddress.postal_code }}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Default</span>
+                  <span class="detail-value">{{ selectedAddress.is_default ? 'Yes' : 'No' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider" *ngIf="showAddressForm"></div>
+
+          <div class="subhead" *ngIf="showAddressForm">{{ editingAddressId ? 'Edit Address' : 'Add Address' }}</div>
+          <form class="form-grid" *ngIf="showAddressForm" (submit)="$event.preventDefault()">
+            <div class="form-group">
+              <label for="ad-street">Street Address</label>
+              <input id="ad-street" class="login-input" [(ngModel)]="addressForm.street_address" name="street_address" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ad-city">City</label>
+                <input id="ad-city" class="login-input" [(ngModel)]="addressForm.city" name="city" required />
+              </div>
+              <div class="form-group">
+                <label for="ad-parish">Parish/State</label>
+                <input id="ad-parish" class="login-input" [(ngModel)]="addressForm.parish_state" name="parish_state" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="ad-country">Country</label>
+                <input id="ad-country" class="login-input" [(ngModel)]="addressForm.country" name="country" required />
+              </div>
+              <div class="form-group">
+                <label for="ad-postal">Postal Code</label>
+                <input id="ad-postal" class="login-input" [(ngModel)]="addressForm.postal_code" name="postal_code" />
+              </div>
+            </div>
+
+            <label class="checkbox-row">
+              <input type="checkbox" [(ngModel)]="addressForm.is_default" name="is_default" />
+              Set as default address
+            </label>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" (click)="saveAddress()">{{ editingAddressId ? 'Save Address' : 'Add Address' }}</button>
+              <button type="button" class="btn btn-outline" (click)="cancelAddressForm()">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+      </section>
+    </div>
+  </section>
+</main>

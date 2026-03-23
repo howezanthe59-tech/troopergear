@@ -1,0 +1,63 @@
+<main class="login-page">
+  <section class="login-hero">
+    <div class="container login-shell">
+      <aside class="login-aside">
+        <span class="page-badge">Sign In</span>
+        <h1>Welcome back, explorer.</h1>
+        <p>Access your wishlist, manage orders, and stay trail-ready.</p>
+        <div class="login-highlights">
+          <div class="highlight-card">
+            <h3>Wishlist Sync</h3>
+            <p>Save gear across devices and pick up anytime.</p>
+          </div>
+          <div class="highlight-card">
+            <h3>Fast Checkout</h3>
+            <p>Keep your details secure for quick reorders.</p>
+          </div>
+          <div class="highlight-card">
+            <h3>Local Support</h3>
+            <p>Get help from our Jamaica-based team.</p>
+          </div>
+        </div>
+      </aside>
+
+      <div class="login-card">
+        <div class="login-header">
+          <h2>Sign In</h2>
+          <p>Use your TrooperGear account to continue.</p>
+        </div>
+
+        <form class="login-form" (submit)="$event.preventDefault()">
+          <div class="form-group">
+            <label for="login-email-page">Email Address</label>
+            <input id="login-email-page" type="email" class="login-input" placeholder="alex@example.com" [(ngModel)]="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="login-password-page">Password</label>
+            <div class="input-wrap">
+              <input id="login-password-page" [type]="showPassword ? 'text' : 'password'" class="login-input" placeholder="Your password" [(ngModel)]="password" name="password" required />
+              <button
+                type="button"
+                class="toggle-visibility"
+                (click)="toggleShowPassword()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                [attr.title]="showPassword ? 'Hide password' : 'Show password'"
+              >
+                <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                <span class="sr-only">{{ showPassword ? 'Hide password' : 'Show password' }}</span>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary login-submit" [disabled]="isSubmitting" (click)="submit()">Log In</button>
+          <p class="password-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+        </form>
+
+        <div class="login-footer">
+          <span>New here?</span>
+          <a routerLink="/signup" class="link-button">Create an account</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

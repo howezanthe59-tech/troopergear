@@ -1,0 +1,85 @@
+<section
+  class="page-header"
+  style="background-image: url('/assets/media/landing.jpeg')"
+>
+  <div class="container header-grid">
+    <div>
+      <span class="page-badge">Trail Notes</span>
+      <h1>Guides, tips & gear updates</h1>
+      <p class="header-subtitle">
+        Short reads to help you hike, camp, and climb smarter in Jamaica.
+      </p>
+    </div>
+    <div class="header-card glass-effect">
+      <h3>Need a recommendation?</h3>
+      <p>Tell us your route and we will match the right kit.</p>
+      <a routerLink="/contact" class="btn btn-secondary">Ask an Expert</a>
+    </div>
+  </div>
+</section>
+
+<section class="blog-section" aria-labelledby="blog-heading">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="blog-heading">Latest Articles</h2>
+      <p>Practical advice you can use on your next trip.</p>
+    </div>
+
+    <div class="posts-grid">
+      <article class="post-card" *ngFor="let post of posts; trackBy: trackById">
+        <div class="post-media">
+          <img [src]="post.image" [alt]="post.imageAlt" loading="lazy" />
+          <span class="post-category" role="status">{{ post.category }}</span>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span>{{ post.date }}</span>
+            <span aria-hidden="true">•</span>
+            <span>{{ post.readTime }}</span>
+          </div>
+          <h3>{{ post.title }}</h3>
+          <p class="post-excerpt">{{ post.excerpt }}</p>
+          <button
+            type="button"
+            class="btn btn-outline btn-compact"
+            (click)="openPost(post)"
+            [attr.aria-label]="'Read article: ' + post.title"
+          >
+            Read Article
+          </button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<div
+  class="modal-overlay"
+  *ngIf="isPostOpen && selectedPost"
+  (click)="closePost()"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-labelledby]="'post-title-' + selectedPost.id"
+>
+  <div class="modal-content glass-effect" (click)="$event.stopPropagation()">
+    <button class="modal-close" type="button" (click)="closePost()" aria-label="Close article">
+      &times;
+    </button>
+
+    <div class="modal-header">
+      <span class="modal-category">{{ selectedPost.category }}</span>
+      <h2 [id]="'post-title-' + selectedPost.id">{{ selectedPost.title }}</h2>
+      <p class="modal-meta">{{ selectedPost.date }} · {{ selectedPost.readTime }}</p>
+    </div>
+
+    <div class="modal-body">
+      <p *ngFor="let para of selectedPost.content">{{ para }}</p>
+
+      <div class="modal-actions">
+        <a routerLink="/products" class="btn btn-primary" (click)="closePost()">Shop Gear</a>
+        <a routerLink="/contact" class="btn btn-secondary" (click)="closePost()">Ask a Question</a>
+      </div>
+    </div>
+  </div>
+</div>
+

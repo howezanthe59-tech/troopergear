@@ -1,0 +1,105 @@
+<main>
+  <section class="hero" aria-label="Welcome Section">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="hero-badge">TrooperGear Jamaica</span>
+        <h1 class="hero-title">Trail-ready gear, built for island terrain.</h1>
+        <p class="hero-subtitle">
+          Premium outdoor equipment engineered for Jamaica's mountains, coasts,
+          and changing weather. Reliable, rugged, and locally tested.
+        </p>
+        <div class="hero-cta">
+          <a routerLink="/products" class="btn btn-primary btn-lg">Explore Collection</a>
+          <a routerLink="/contact" class="btn btn-secondary btn-lg hero-cta-alt">Talk to an Expert</a>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <span class="stat-value">48Hr</span>
+            <span class="stat-label">Island Delivery</span>
+          </div>
+          <div>
+            <span class="stat-value">500+</span>
+            <span class="stat-label">Orders Fulfilled</span>
+          </div>
+          <div>
+            <span class="stat-value">4.9</span>
+            <span class="stat-label">Avg Rating</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card glass-effect">
+          <p class="hero-card-title">Featured Pick</p>
+          <h3>SummitGuard Hiking Shoe</h3>
+          <p>All-day comfort, all-weather grip, island-tested durability.</p>
+          <a routerLink="/products" class="btn btn-outline">Shop Footwear</a>
+        </div>
+        <div class="hero-image">
+          <img src="/assets/media/landing.jpeg" alt="Hikers on a mountain trail" loading="eager" decoding="async" fetchpriority="high" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="featured-section" aria-labelledby="featured-heading">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <h2 id="featured-heading">Featured Gear</h2>
+        </div>
+      </div>
+
+      <div class="product-grid">
+        <app-product-card 
+          *ngFor="let p of featuredProducts" 
+          [data]="p" 
+          [minimal]="true"
+          style="flex: 1; min-width: 300px;">
+        </app-product-card>
+      </div>
+    </div>
+  </section>
+
+  <section class="promo-banner" aria-label="Announcement">
+    <div class="promo-inner" role="status" aria-live="polite">
+      <span>New users get free delivery on your first order</span>
+      <span class="promo-sep" aria-hidden="true">•</span>
+      <span>What are you waiting for?</span>
+      <span class="promo-sep" aria-hidden="true">•</span>
+      <button type="button" class="promo-link" (click)="openSignup()">Sign up today</button>
+    </div>
+  </section>
+
+  <section class="features-section" aria-labelledby="features-heading">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2 id="features-heading">Why TrooperGear</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">Target</div>
+          <h3>Quality Assured</h3>
+          <p>Every product tested across island terrain.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">Truck</div>
+          <h3>Island-Wide Delivery</h3>
+          <p>Fast and reliable shipping across all parishes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">Shield</div>
+          <h3>Built to Last</h3>
+          <p>Durable construction designed for tough adventures.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" aria-hidden="true">Leaf</div>
+          <h3>Eco-Conscious</h3>
+          <p>Responsible practices to protect our island.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+

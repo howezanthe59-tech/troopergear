@@ -1,0 +1,155 @@
+<main>
+  <section
+    class="page-header"
+    style="background-image: url('/assets/media/contact.png');">
+    <div class="container header-grid">
+      <div>
+        <span class="page-badge">Contact TrooperGear</span>
+        <h1>Get in Touch</h1>
+        </div>
+      <div class="header-card glass-effect">
+        <h3>Fast Response</h3>
+        <p>We reply within 24 hours on business days.</p>
+        <div class="header-actions">
+          <a href="tel:8765554327" class="btn btn-secondary">Call Now</a>
+          <a href="mailto:troopergear876@gmail.com" class="btn btn-outline">Email Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-section" aria-labelledby="contact-heading">
+    <div class="container">
+      <div class="contact-intro">
+        <h2 id="contact-heading">Contact TrooperGear</h2>
+        <p>
+          Have questions about our products or need help choosing the right kit?
+          Send us a message and our team will guide you.
+        </p>
+      </div>
+
+      <div class="contact-layout">
+        <div class="contact-form-wrapper glass-effect">
+          <h3>Send Us a Message</h3>
+
+          <div *ngIf="submitted" class="success-message" role="alert">
+            <div class="success-icon" aria-hidden="true">OK</div>
+            <h4>Message Sent</h4>
+            <p>Thank you for reaching out. We will be in touch soon.</p>
+            <button class="btn btn-secondary" (click)="submitted = false">Send Another Message</button>
+          </div>
+
+          <form *ngIf="!submitted" class="contact-form" (ngSubmit)="onSubmit()">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <input type="text" id="firstName" name="firstName" [(ngModel)]="formData.firstName" required aria-required="true" />
+              </div>
+
+              <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <input type="text" id="lastName" name="lastName" [(ngModel)]="formData.lastName" required aria-required="true" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <input type="email" id="email" name="email" [(ngModel)]="formData.email" required aria-required="true" placeholder="alex@gmail.com" />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                [(ngModel)]="formData.phone"
+                placeholder="876-XXX-XXXX" />
+            </div>
+
+            <div class="form-group">
+              <label for="subject">Subject *</label>
+              <select id="subject" name="subject" [(ngModel)]="formData.subject" required aria-required="true">
+                <option value="">Select a subject</option>
+                <option value="product">Product Inquiry</option>
+                <option value="order">Order Status</option>
+                <option value="support">Customer Support</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="message">Message *</label>
+              <textarea
+                id="message"
+                name="message"
+                rows="6"
+                [(ngModel)]="formData.message"
+                required
+                aria-required="true"></textarea>
+            </div>
+
+            <p class="data-use" id="data-use">
+              <strong>Data use:</strong> We use the information you provide to respond to your enquiry and improve customer support.
+              Do not include passwords or sensitive payment details. Learn more in our
+              <a routerLink="/privacy">Privacy Policy</a>.
+            </p>
+
+            <button type="submit" class="btn btn-primary btn-full">
+              Send Message
+            </button>
+          </form>
+        </div>
+
+        <div class="contact-info-wrapper">
+          <article class="contact-info-card glass-effect">
+            <h3>Store Location</h3>
+            <div class="info-item">
+              <div>
+                <p><strong>TrooperGear Jamaica</strong></p>
+                <address style="font-style: normal">
+                  123 Main Street<br />
+                  Kingston, Jamaica
+                </address>
+              </div>
+            </div>
+          </article>
+
+          <article class="contact-info-card glass-effect">
+            <h3>Contact Details</h3>
+            <div class="info-item">
+              <span class="info-icon" aria-hidden="true">Phone</span>
+              <div>
+                <p><strong>Phone</strong></p>
+                <p><a href="tel:8765554327">876-555-GEAR (4327)</a></p>
+              </div>
+            </div>
+            <div class="info-item">
+              <span class="info-icon" aria-hidden="true">Mail</span>
+              <div>
+                <p><strong>Email</strong></p>
+                <p><a href="mailto:troopergear876@gmail.com">troopergear876@gmail.com</a></p>
+              </div>
+            </div>
+          </article>
+
+          <article class="contact-info-card glass-effect">
+            <h3>Business Hours</h3>
+            <div class="hours-row">
+              <span>Mon - Fri</span>
+              <span>9:00 AM - 6:00 PM</span>
+            </div>
+            <div class="hours-row">
+              <span>Saturday</span>
+              <span>10:00 AM - 4:00 PM</span>
+            </div>
+            <div class="hours-row">
+              <span>Sunday</span>
+              <span>Closed</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+

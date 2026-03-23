@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+    <product>
+        <id>1</id>
+        <name>SummitGuard Hiking Shoe</name>
+        <category>Footwear</category>
+        <activity>Hiking</activity>
+        <description>A high-performance hiking shoe offering stability and protection on tough terrain.</description>
+        <price>179.59</price>
+        <stock>25</stock>
+        <badge>Bestseller</badge>
+        <image>shoe3.png</image>
+    </product>
+    <product>
+        <id>3</id>
+        <name>MalShoe Ridge Hiker</name>
+        <category>Footwear</category>
+        <activity>Hiking</activity>
+        <description>Rugged hiking shoe built for rocky trails, wet roots, and long-distance comfort.</description>
+        <price>149.00</price>
+        <stock>18</stock>
+        <badge>New</badge>
+        <image>MALSHOE.png</image>
+    </product>
+    <product>
+        <id>5</id>
+        <name>FemShoe Trail Breeze</name>
+        <category>Footwear</category>
+        <activity>Hiking</activity>
+        <description>Lightweight women's trail shoe with responsive cushioning and breathable mesh.</description>
+        <price>139.00</price>
+        <stock>22</stock>
+        <badge></badge>
+        <image>femshoe1.png</image>
+    </product>
+    <product>
+        <id>2</id>
+        <name>SummitLite Trail Backpack</name>
+        <category>Backpack</category>
+        <activity>Camping</activity>
+        <description>Designed for tropical nights and changing weather. Lightweight and breathable.</description>
+        <price>54.50</price>
+        <stock>30</stock>
+        <badge></badge>
+        <image>bag4.png</image>
+    </product>
+    <product>
+        <id>4</id>
+        <name>RidgeRunner 100L Backpack</name>
+        <category>Backpack</category>
+        <activity>Climbing</activity>
+        <description>Heavy-duty expedition backpack for long mountain treks and climbing adventures.</description>
+        <price>129.99</price>
+        <stock>15</stock>
+        <badge>Premium</badge>
+        <image>bag.png</image>
+    </product>
+    <product>
+        <id>6</id>
+        <name>Riverstone DryPack 35L</name>
+        <category>Backpack</category>
+        <activity>Hiking</activity>
+        <description>Waterproof roll-top pack built for river crossings and sudden tropical rain.</description>
+        <price>89.00</price>
+        <stock>28</stock>
+        <badge>New</badge>
+        <image>bag1.png</image>
+    </product>
+    <product>
+        <id>7</id>
+        <name>SummitShade Trek Tent</name>
+        <category>Camping Tent</category>
+        <activity>Camping</activity>
+        <description>All-weather trekking tent with reinforced seams and quick pitch setup.</description>
+        <price>59.99</price>
+        <stock>40</stock>
+        <badge></badge>
+        <image>Tent (3).png</image>
+    </product>
+    <product>
+        <id>8</id>
+        <name>CanopyLite 2P Tent</name>
+        <category>Camping Tent</category>
+        <activity>Camping</activity>
+        <description>Compact two-person shelter with fast setup and high airflow for island nights.</description>
+        <price>119.00</price>
+        <stock>18</stock>
+        <badge>Premium</badge>
+        <image>tent2.png</image>
+    </product>
+    <product>
+        <id>9</id>
+        <name>StormGuard Basecamp Tent</name>
+        <category>Camping Tent</category>
+        <activity>Camping</activity>
+        <description>Spacious basecamp tent designed for extended stays and strong winds.</description>
+        <price>149.50</price>
+        <stock>12</stock>
+        <badge></badge>
+        <image>tent3.png</image>
+    </product>
+    <product>
+        <id>10</id>
+        <name>TrailBeam Flashlight</name>
+        <category>Equipments</category>
+        <activity>Camping</activity>
+        <description>High-lumen outdoor flashlight with rugged grip and storm-ready build.</description>
+        <price>24.99</price>
+        <stock>45</stock>
+        <badge></badge>
+        <image>flashlight.png</image>
+    </product>
+    <product>
+        <id>11</id>
+        <name>TrailRoute Map Set</name>
+        <category>Equipments</category>
+        <activity>Hiking</activity>
+        <description>Detailed trail map set for Jamaica's most popular routes and campsites.</description>
+        <price>14.50</price>
+        <stock>80</stock>
+        <badge></badge>
+        <image>map.png</image>
+    </product>
+    <product>
+        <id>12</id>
+        <name>StormGuide Weather Station</name>
+        <category>Equipments</category>
+        <activity>Camping</activity>
+        <description>Portable weather tracker to monitor humidity, pressure, and rain shifts.</description>
+        <price>79.00</price>
+        <stock>12</stock>
+        <badge>New</badge>
+        <image>machine.png</image>
+    </product>
+</products>

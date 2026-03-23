@@ -1,0 +1,109 @@
+<main class="signup-page">
+  <section class="signup-hero">
+    <div class="container">
+      <span class="page-badge">Sign Up</span>
+      <h1>Create Your TrooperGear Account</h1>
+      <p>Track orders, save wishlists, and move faster at checkout.</p>
+    </div>
+  </section>
+
+  <section class="signup-content">
+    <div class="container">
+      <div class="signup-card">
+        <div class="signup-header">
+          <h2>Start Your Journey</h2>
+          <p>Fill in your details to create an account.</p>
+        </div>
+
+        <form class="signup-form" (submit)="$event.preventDefault()">
+          <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <input id="signup-name" type="text" class="login-input" placeholder="Alex Thompson" [(ngModel)]="name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Email Address</label>
+            <input id="signup-email" type="email" class="login-input" placeholder="alex@example.com" [(ngModel)]="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <div class="input-wrap">
+              <input
+                id="signup-password"
+                [type]="showPassword ? 'text' : 'password'"
+                class="login-input"
+                placeholder="Create a strong password"
+                [(ngModel)]="password"
+                name="password"
+                (input)="updatePasswordStatus(password)"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-visibility"
+                (click)="toggleShowPassword()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                [attr.title]="showPassword ? 'Hide password' : 'Show password'"
+              >
+                <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                <span class="sr-only">{{ showPassword ? 'Hide password' : 'Show password' }}</span>
+              </button>
+            </div>
+            <div class="password-hint">
+              <span class="password-rule">At least 8 characters with a letter, number, and symbol.</span>
+              <span class="password-status" [class.valid]="passwordValid">{{ passwordStatus }}</span>
+            </div>
+            <p class="password-error" *ngIf="passwordStatus === 'STRONG-WEAK'">
+              Password must include a letter, number, symbol, and be 8+ characters.
+            </p>
+          </div>
+          <div class="form-group">
+            <label for="signup-confirm">Confirm Password</label>
+            <div class="input-wrap">
+              <input
+                id="signup-confirm"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                class="login-input"
+                placeholder="Re-enter your password"
+                [(ngModel)]="confirm"
+                name="confirm"
+                (input)="updateConfirmStatus(password, confirm)"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-visibility"
+                (click)="toggleShowConfirmPassword()"
+                [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+                [attr.title]="showConfirmPassword ? 'Hide password' : 'Show password'"
+              >
+                <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                <span class="sr-only">{{ showConfirmPassword ? 'Hide password' : 'Show password' }}</span>
+              </button>
+            </div>
+            <p class="password-error" *ngIf="confirmStatus === 'NO-MATCH'">
+              Passwords do not match.
+            </p>
+          </div>
+
+          <div class="form-agreement">
+            <label class="agreement-label">
+              <input type="checkbox" [(ngModel)]="agreeToPolicies" name="agreeToPolicies" />
+              <span>
+                I have read and agree to the <a routerLink="/privacy">Privacy Policy</a> and <a routerLink="/terms">Terms &amp; Conditions</a>
+              </span>
+            </label>
+            <p class="password-error" *ngIf="agreementError">{{ agreementError }}</p>
+          </div>
+
+          <button type="submit" class="btn btn-primary login-submit" [disabled]="!passwordValid || !confirmValid || isSubmitting" (click)="submit()">Create Account</button>
+          <p class="password-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+        </form>
+
+        <div class="signup-footer">
+          <span>Already have an account?</span>
+          <a routerLink="/login" class="link-button">Go back and log in</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

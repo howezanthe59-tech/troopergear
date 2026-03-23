@@ -1,0 +1,117 @@
+<main class="privacy-page">
+  <section class="page-header">
+    <div class="container">
+      <h1>Privacy Policy</h1>
+      <p>Last Updated: March 23, 2026</p>
+    </div>
+  </section>
+
+  <section class="privacy-content">
+    <div class="container">
+      <div class="glass-effect policy-card">
+        <h2>1. Overview</h2>
+        <p>
+          TrooperGear Jamaica ("TrooperGear", "we", "us") respects your privacy. This policy explains what we collect,
+          how we use it, and how you can control certain types of data collection, including cookie preferences.
+        </p>
+
+        <h2 class="mt-4">2. Information We Collect</h2>
+        <ul>
+          <li><strong>Account and Contact:</strong> name, email, phone number, and address details you provide.</li>
+          <li><strong>Orders and Payments:</strong> order history and payment confirmation (we do not store full card numbers).</li>
+          <li><strong>Technical and Security:</strong> device and browser information, and IP address for fraud prevention and security logging.</li>
+        </ul>
+
+        <h2 class="mt-4">3. How We Use Your Information</h2>
+        <ul>
+          <li>To process orders, deliver products, and provide customer support.</li>
+          <li>To secure our services, prevent fraud, and protect accounts.</li>
+          <li>To improve our website experience (only when you allow Analytics/Functional cookies).</li>
+          <li>To personalize offers and measure campaigns (only when you allow Marketing cookies).</li>
+        </ul>
+
+        <h2 class="mt-4">4. Cookies & Similar Technologies</h2>
+        <p>
+          Cookies are small files stored on your device. We also use localStorage/sessionStorage where needed for similar
+          purposes. Essential storage is required for core features and security. Non-essential storage is optional and
+          only used after you make a choice in the Cookie Settings section below.
+        </p>
+
+        <h2 id="cookie-settings" class="mt-5">Cookie Settings</h2>
+        <p class="cookie-subtitle">
+          Essential cookies are always active. Non-essential cookies are off by default until you opt in.
+        </p>
+
+        <div class="cookie-settings" role="group" aria-label="Cookie preference categories">
+          <div class="cookie-row">
+            <div class="cookie-row__text">
+              <h3>Essential Cookies</h3>
+              <p>Required for core site features like account login, cart, checkout, and security.</p>
+            </div>
+            <div class="cookie-row__control">
+              <input id="tg-cookie-essential" type="checkbox" checked disabled />
+              <label class="cookie-switch cookie-switch--disabled" for="tg-cookie-essential" aria-hidden="true"></label>
+            </div>
+          </div>
+
+          <div class="cookie-row">
+            <div class="cookie-row__text">
+              <h3>Analytics Cookies</h3>
+              <p>Help us understand site traffic and improve the shopping experience.</p>
+            </div>
+            <div class="cookie-row__control">
+              <input id="tg-cookie-analytics" name="analytics" type="checkbox" [(ngModel)]="draft.analytics" />
+              <label class="cookie-switch" for="tg-cookie-analytics">
+                <span class="sr-only">Toggle Analytics Cookies</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="cookie-row">
+            <div class="cookie-row__text">
+              <h3>Marketing Cookies</h3>
+              <p>Used to show relevant products and measure marketing campaign performance.</p>
+            </div>
+            <div class="cookie-row__control">
+              <input id="tg-cookie-marketing" name="marketing" type="checkbox" [(ngModel)]="draft.marketing" />
+              <label class="cookie-switch" for="tg-cookie-marketing">
+                <span class="sr-only">Toggle Marketing Cookies</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="cookie-row">
+            <div class="cookie-row__text">
+              <h3>Functional Cookies</h3>
+              <p>Remember choices like UI preferences and enhanced features to improve convenience.</p>
+            </div>
+            <div class="cookie-row__control">
+              <input id="tg-cookie-functional" name="functional" type="checkbox" [(ngModel)]="draft.functional" />
+              <label class="cookie-switch" for="tg-cookie-functional">
+                <span class="sr-only">Toggle Functional Cookies</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="cookie-actions" role="group" aria-label="Cookie settings actions">
+          <button type="button" class="btn btn-primary" (click)="savePreferences()">Save Preferences</button>
+          <button type="button" class="btn btn-outline" (click)="acceptAll()">Accept All</button>
+          <button type="button" class="btn btn-outline" (click)="rejectNonEssential()">Reject Non-Essential</button>
+        </div>
+
+        <p class="cookie-timestamp" *ngIf="consentUpdatedAt">
+          Consent timestamp: {{ consentUpdatedAt | date:'medium' }}
+        </p>
+        <p class="cookie-saved" *ngIf="savedMessage" aria-live="polite">{{ savedMessage }}</p>
+
+        <h2 class="mt-5">5. Your Rights and Contact</h2>
+        <p>
+          You can request access, correction, or deletion of your personal data when legally applicable. For privacy
+          requests, contact <a href="mailto:troopergear876@gmail.com">troopergear876@gmail.com</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+

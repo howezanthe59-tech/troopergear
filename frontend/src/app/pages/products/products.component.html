@@ -1,0 +1,474 @@
+<section
+  class="page-header"
+  style="background-image: url('/assets/media/product.png')"
+>
+  <div class="container header-grid">
+    <div>
+      <span class="page-badge">TrooperGear Collection</span>
+      <h1>Our Product Collection</h1>
+    </div>
+    <div class="header-card glass-effect">
+      <h3>Need help choosing?</h3>
+      <p>Tell us your route and we will recommend the best setup.</p>
+      <a routerLink="/contact" class="btn btn-secondary">Talk to an Expert</a>
+    </div>
+  </div>
+</section>
+
+<section class="products-listing">
+  <div class="container">
+    <div class="products-intro">
+      <div>
+        <h2>Discover Premium Outdoor Gear</h2>
+        <p class="results-summary" aria-live="polite">
+          Showing {{ filteredProducts.length }} products
+          <span *ngIf="selectedCategory !== 'all'">in {{ selectedCategory }}</span>
+          <span *ngIf="selectedActivity !== 'all'">for {{ selectedActivity }}</span>
+        </p>
+      </div>
+      <div class="intro-stats">
+        <div>
+          <span class="stat-value">100%</span>
+          <span class="stat-label">Field Tested</span>
+        </div>
+        <div>
+          <span class="stat-value">48Hr</span>
+          <span class="stat-label">Island Delivery</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-dashboard glass-effect">
+      <div class="filter-section search-tool">
+        <label for="search">Search Gear</label>
+        <div class="search-input-wrapper">
+          <input
+            type="text"
+            id="search"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchInput()"
+            (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()"
+            placeholder="Search by name or description..."
+          />
+          <span class="search-icon" aria-hidden="true"></span>
+          <ul class="search-suggestions" *ngIf="showSuggestions">
+            <li *ngFor="let s of suggestions">
+              <button type="button" (click)="selectSuggestion(s)">
+                <span class="suggest-name">{{ s.name }}</span>
+                <span class="suggest-type">{{ s.type }}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="filter-section category-filter">
+        <span class="filter-label">Filter by Category</span>
+        <div class="filter-chips" role="group" aria-label="Category filters">
+          <button
+            [attr.aria-pressed]="selectedCategory === 'all'"
+            [class.active]="selectedCategory === 'all'"
+            (click)="filterByCategory('all')"
+          >
+            All
+          </button>
+          <button
+            *ngFor="let category of categories"
+            [attr.aria-pressed]="selectedCategory === category"
+            [class.active]="selectedCategory === category"
+            (click)="filterByCategory(category)"
+          >
+            {{ category }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-section price-filter">
+        <span class="filter-label">Price Range</span>
+        <div class="price-range-row" role="group" aria-label="Price range">
+          <label class="sr-only" for="minPrice">Minimum price</label>
+          <input
+            type="number"
+            id="minPrice"
+            min="0"
+            step="1"
+            [(ngModel)]="minPrice"
+            (input)="applyFilters()"
+            placeholder="Min"
+            aria-label="Minimum price"
+          />
+          <span class="price-sep" aria-hidden="true">–</span>
+          <label class="sr-only" for="maxPrice">Maximum price</label>
+          <input
+            type="number"
+            id="maxPrice"
+            min="0"
+            step="1"
+            [(ngModel)]="maxPrice"
+            (input)="applyFilters()"
+            placeholder="Max"
+            aria-label="Maximum price"
+          />
+        </div>
+
+        <label class="range-label" for="priceRange">Max slider: ${{ maxPrice }}</label>
+        <input
+          type="range"
+          id="priceRange"
+          min="0"
+          max="500"
+          step="10"
+          [(ngModel)]="maxPrice"
+          (input)="applyFilters()"
+        />
+      </div>
+
+      <div class="filter-section sort-tool">
+        <label for="sortBy">Sort By</label>
+        <select id="sortBy" (change)="onSortChange($event)">
+          <option value="default">Featured</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="name-az">A-Z</option>
+        </select>
+      </div>
+
+      <div class="filter-section activity-filter">
+        <span class="filter-label">Filter by Activity</span>
+        <div class="filter-chips" role="group" aria-label="Activity filters">
+          <button
+            [attr.aria-pressed]="selectedActivity === 'all'"
+            [class.active]="selectedActivity === 'all'"
+            (click)="filterByActivity('all')"
+            type="button"
+          >
+            All
+          </button>
+          <button
+            *ngFor="let a of activityOptions"
+            [attr.aria-pressed]="selectedActivity === a"
+            [class.active]="selectedActivity === a"
+            (click)="filterByActivity(a)"
+            type="button"
+          >
+            {{ a }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-section data-source">
+        <span class="filter-label">Data Source</span>
+        <div class="data-source-controls" role="group" aria-label="Product feed source">
+          <button
+            type="button"
+            [attr.aria-pressed]="dataSource === 'api'"
+            [class.active]="dataSource === 'api'"
+            (click)="useLiveData()"
+          >
+            Live
+          </button>
+          <button
+            type="button"
+            [attr.aria-pressed]="dataSource === 'xml'"
+            [class.active]="dataSource === 'xml'"
+            (click)="useXmlFeed()"
+          >
+            XML Feed
+          </button>
+          <button
+            *ngIf="dataSource === 'xml'"
+            type="button"
+            class="refresh-xml"
+            (click)="refreshXmlFeed()"
+            aria-label="Refresh products from XML feed"
+          >
+            Refresh
+          </button>
+        </div>
+        <p class="data-source-status" *ngIf="feedStatus" aria-live="polite">
+          {{ feedStatus }}
+        </p>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+      <p>Loading gear...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="product-grid-full">
+      <app-product-card
+        *ngFor="let p of filteredProducts"
+        [data]="p"
+        [popupMode]="'emit'"
+        (addToCart)="addToCart($event.product, $event.variant)"
+        (viewMore)="openDetails($event)"
+      >
+      </app-product-card>
+    </div>
+
+    <div
+      *ngIf="!isLoading && filteredProducts.length === 0"
+      class="no-products"
+    >
+      <p>No products found for your filters.</p>
+    </div>
+
+    <div class="products-cta">
+      <h3>Ready to Gear Up?</h3>
+      <p>
+        Contact us today to place your order or visit our store for personalized
+        assistance.
+      </p>
+      <a routerLink="/contact" class="btn btn-primary">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<div
+  class="modal-overlay"
+  *ngIf="isDetailsOpen && selectedProduct"
+  (click)="closeDetails()"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-labelledby]="'modal-title-products-' + selectedProduct.id"
+>
+  <div class="modal-content glass-effect" (click)="$event.stopPropagation()">
+    <button
+      class="modal-close"
+      (click)="closeDetails()"
+      aria-label="Close details"
+    >
+      &times;
+    </button>
+
+    <div class="modal-grid" *ngIf="selectedProduct as p">
+      <div class="modal-image-side">
+        <div class="modal-badge-new" *ngIf="p.badge">NEW</div>
+        <img [src]="media.productImageUrl(getSelectedImage(p))" [alt]="p.name" loading="eager" decoding="async" />
+      </div>
+      <div class="modal-info-side">
+        <span class="modal-meta">{{ p.type }}</span>
+        <h2 [id]="'modal-title-products-' + p.id">{{ p.name }}</h2>
+        <p class="modal-desc">{{ p.description }}</p>
+
+        <ul class="modal-features">
+          <li *ngIf="p.capacity">
+            <span>Check</span> {{ p.capacity }}L capacity
+          </li>
+          <li *ngIf="p.type"><span>Check</span> Premium {{ p.type }} build</li>
+          <li><span>Check</span> Weather-resistant material</li>
+          <li><span>Check</span> Lifetime warranty</li>
+        </ul>
+
+        <div class="modal-footer-row">
+          <span class="modal-price">
+            ${{ p.name === 'TrailBeam Flashlight'
+              ? (selectedSize === 'Small' ? 19.99 : 24.99)
+              : p.price }}
+          </span>
+        </div>
+        <div class="modal-color-options" *ngIf="isSelectedFootwear() && getFootwearColors(p).length > 1">
+          <span class="color-label">Color:</span>
+          <div
+            class="color-swatches"
+            role="group"
+            aria-label="Choose shoe color"
+          >
+            <button
+              *ngFor="let c of getFootwearColors(p)"
+              type="button"
+              class="swatch"
+              [class.active]="selectedColor === c"
+              (click)="setColor(c)"
+            >
+              {{ c }}
+            </button>
+          </div>
+        </div>
+        <div class="modal-color-options" *ngIf="isSelectedBackpack() && (selectedProduct.id === 4 || selectedProduct.id === 6)">
+          <span class="color-label">Color:</span>
+          <div
+            class="color-swatches"
+            role="group"
+            aria-label="Choose backpack color"
+          >
+            <button
+              type="button"
+              class="swatch"
+              [class.active]="selectedBagColor === 'Green'"
+              (click)="setBagColor('Green')"
+            >
+              Green
+            </button>
+            <button
+              type="button"
+              class="swatch"
+              [class.active]="selectedBagColor === 'Black'"
+              (click)="setBagColor('Black')"
+            >
+              Black
+            </button>
+          </div>
+        </div>
+        <div class="modal-size-options" *ngIf="isSelectedFootwear()">
+          <span class="size-label">Size:</span>
+          <div class="size-swatches" role="group" aria-label="Choose shoe size">
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '5'"
+              (click)="setSize('5')"
+            >
+              5
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '5.5'"
+              (click)="setSize('5.5')"
+            >
+              5.5
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '6'"
+              (click)="setSize('6')"
+            >
+              6
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '6.5'"
+              (click)="setSize('6.5')"
+            >
+              6.5
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '7'"
+              (click)="setSize('7')"
+            >
+              7
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '7.5'"
+              (click)="setSize('7.5')"
+            >
+              7.5
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '8'"
+              (click)="setSize('8')"
+            >
+              8
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '8.5'"
+              (click)="setSize('8.5')"
+            >
+              8.5
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '9'"
+              (click)="setSize('9')"
+            >
+              9
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '9.5'"
+              (click)="setSize('9.5')"
+            >
+              9.5
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '10'"
+              (click)="setSize('10')"
+            >
+              10
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '10.5'"
+              (click)="setSize('10.5')"
+            >
+              10.5
+            </button>
+            <button
+              type="button"
+              class="size-chip"
+              [class.active]="selectedSize === '11'"
+              (click)="setSize('11')"
+            >
+              11
+            </button>
+          </div>
+        </div>
+        <div class="modal-size-options" *ngIf="selectedProduct.name === 'TrailBeam Flashlight'">
+          <span class="size-label">Size:</span>
+          <div class="size-swatches" role="group" aria-label="Choose flashlight size">
+            <button type="button" class="size-chip" [class.active]="selectedSize === 'Big'" (click)="setSize('Big')">Big</button>
+            <button type="button" class="size-chip" [class.active]="selectedSize === 'Small'" (click)="setSize('Small')">Small</button>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <p class="variant-warning" *ngIf="wishlistMessage">{{ wishlistMessage }}</p>
+          <p class="variant-warning" *ngIf="!isVariantComplete() && isSelectedFootwear() && hasSelectedFootwearOptions()">
+            Please select size and colour.
+          </p>
+          <p class="variant-warning" *ngIf="!isVariantComplete() && isSelectedFootwear() && !hasSelectedFootwearOptions()">
+            Please select size.
+          </p>
+          <p class="variant-warning" *ngIf="!isVariantComplete() && hasSelectedBackpackOptions()">
+            Please select colour.
+          </p>
+          <p class="variant-warning" *ngIf="!isVariantComplete() && isSelectedFlashlight()">
+            Please select size.
+          </p>
+          <div class="modal-action-row">
+            <button
+              class="btn btn-primary modal-btn-cart"
+              (click)="addToCartWithVariant(p); closeDetails()"
+              [disabled]="!isVariantComplete()"
+              [attr.aria-label]="'Add ' + p.name + ' to cart'"
+            >
+              Add to Cart
+            </button>
+            <button
+              *ngIf="isLoggedIn"
+              class="btn btn-outline modal-btn-wishlist"
+              (click)="addToWishlist(p)"
+              [attr.aria-label]="'Add ' + p.name + ' to wishlist'"
+            >
+              &#10084; Wishlist
+            </button>
+            <a
+              *ngIf="!isLoggedIn"
+              class="btn btn-outline modal-btn-wishlist"
+              routerLink="/login"
+              [attr.aria-label]="'Sign in to save ' + p.name"
+            >
+              &#10084; Wishlist
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

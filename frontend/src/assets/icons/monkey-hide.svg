@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <circle cx="12" cy="12" r="7.35" fill="#c68642"/>
+  <circle cx="6.1" cy="10.9" r="2.65" fill="#c68642"/>
+  <circle cx="17.9" cy="10.9" r="2.65" fill="#c68642"/>
+  <circle cx="6.1" cy="10.9" r="1.55" fill="#f1c27d"/>
+  <circle cx="17.9" cy="10.9" r="1.55" fill="#f1c27d"/>
+  <circle cx="12" cy="13.2" r="4.55" fill="#f1c27d"/>
+
+  <!-- arms -->
+  <path
+    d="M6.6 13.25c1.2-1.35 2.35-2.05 3.55-2.25"
+    fill="none"
+    stroke="#c68642"
+    stroke-width="2.3"
+    stroke-linecap="round"
+  />
+  <path
+    d="M17.4 13.25c-1.2-1.35-2.35-2.05-3.55-2.25"
+    fill="none"
+    stroke="#c68642"
+    stroke-width="2.3"
+    stroke-linecap="round"
+  />
+
+  <!-- hands (covering eyes) -->
+  <ellipse cx="9.45" cy="12.05" rx="2.7" ry="2.15" fill="#b8793a"/>
+  <ellipse cx="14.55" cy="12.05" rx="2.7" ry="2.15" fill="#b8793a"/>
+  <path
+    d="M7.9 11.95h3.1M8.6 11.2v1.5M13 11.95h3.1M14.3 11.2v1.5"
+    stroke="#2a231a"
+    stroke-width="0.85"
+    stroke-linecap="round"
+  />
+
+  <!-- smile -->
+  <path d="M10.2 14.55c.85.75 1.55 1.05 1.8 1.05s.95-.3 1.8-1.05" fill="none" stroke="#2a231a" stroke-width="1.15" stroke-linecap="round"/>
+</svg>

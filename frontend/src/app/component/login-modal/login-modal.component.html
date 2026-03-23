@@ -1,0 +1,259 @@
+<div *ngIf="isVisible" class="login-overlay" (click)="close()" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="login-shell" (click)="$event.stopPropagation()">
+    <button class="close-modal" (click)="close()" aria-label="Close Login Modal">x</button>
+
+    <aside class="login-hero">
+      <div class="hero-badge">TrooperGear</div>
+      <h2 id="modal-title">{{ currentTab === 'login' ? 'Return to the Trail' : 'Start Your Journey' }}</h2>
+      <p class="hero-copy">
+        Secure access to your gear, orders, and saved adventures.
+      </p>
+      <div class="hero-stats">
+        <div>
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">Support</span>
+        </div>
+        <div>
+          <span class="stat-value">3-Day</span>
+          <span class="stat-label">Delivery</span>
+        </div>
+        <div>
+          <span class="stat-value">Eco</span>
+          <span class="stat-label">Materials</span>
+        </div>
+      </div>
+    </aside>
+
+    <section class="login-panel glass-effect">
+      <div class="login-header">
+        <h3>{{ currentTab === 'login' ? 'Sign In' : 'Create Account' }}</h3>
+        <p>{{ currentTab === 'login' ? 'Welcome back, explorer.' : 'Join the TrooperGear community.' }}</p>
+      </div>
+
+      <div class="login-tabs" role="tablist">
+        <button 
+          role="tab"
+          [attr.aria-selected]="currentTab === 'login'"
+          [class.active]="currentTab === 'login'" 
+          (click)="setTab('login')"
+          aria-controls="login-panel">
+          Login
+        </button>
+        <button 
+          role="tab"
+          [attr.aria-selected]="currentTab === 'register'"
+          [class.active]="currentTab === 'register'" 
+          (click)="setTab('register')"
+          aria-controls="register-panel">
+          Register
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="login-panel" role="tabpanel" *ngIf="currentTab === 'login'" aria-labelledby="login-tab">
+        <form class="login-form" (submit)="$event.preventDefault()" *ngIf="!showReset">
+          <div class="form-group">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" placeholder="e.g. alex@example.com" class="login-input" [(ngModel)]="loginEmail" name="loginEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <div class="input-wrap">
+              <input
+                [type]="showLoginPassword ? 'text' : 'password'"
+                id="login-password"
+                placeholder="Your password"
+                class="login-input"
+                [(ngModel)]="loginPassword"
+                name="loginPassword"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-visibility"
+                (click)="toggleShowLoginPassword()"
+                [attr.aria-label]="showLoginPassword ? 'Hide password' : 'Show password'"
+                [attr.title]="showLoginPassword ? 'Hide password' : 'Show password'"
+              >
+                <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                <span class="sr-only">{{ showLoginPassword ? 'Hide password' : 'Show password' }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="form-row">
+            <button type="button" class="link-button" (click)="startReset()">Forgot password?</button>
+          </div>
+          <button type="submit" class="btn btn-primary login-submit" [disabled]="isSubmitting" (click)="submitLogin()">Log In</button>
+        </form>
+
+        <div *ngIf="showReset" class="login-form">
+          <div *ngIf="resetStep === 'request'">
+            <div class="form-group">
+              <label for="reset-email">Email Address</label>
+              <input type="email" id="reset-email" placeholder="alex@example.com" class="login-input" [(ngModel)]="resetEmail" name="resetEmail" required />
+            </div>
+            <button type="button" class="btn btn-primary login-submit" [disabled]="isSubmitting" (click)="requestReset()">Send Reset Token</button>
+          </div>
+
+          <div *ngIf="resetStep === 'confirm'">
+            <div class="form-group">
+              <label for="reset-token">Reset Token</label>
+              <input type="text" id="reset-token" placeholder="Paste your token" class="login-input" [(ngModel)]="resetToken" name="resetToken" required />
+            </div>
+            <div class="form-group">
+              <label for="reset-password">New Password</label>
+              <div class="input-wrap">
+                <input
+                  [type]="showResetPassword ? 'text' : 'password'"
+                  id="reset-password"
+                  placeholder="New password"
+                  class="login-input"
+                  [(ngModel)]="resetPassword"
+                  name="resetPassword"
+                  (input)="updatePasswordStatus(resetPassword)"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toggle-visibility"
+                  (click)="toggleShowResetPassword()"
+                  [attr.aria-label]="showResetPassword ? 'Hide password' : 'Show password'"
+                  [attr.title]="showResetPassword ? 'Hide password' : 'Show password'"
+                >
+                  <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                  <span class="sr-only">{{ showResetPassword ? 'Hide password' : 'Show password' }}</span>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="reset-confirm">Confirm Password</label>
+              <div class="input-wrap">
+                <input
+                  [type]="showResetConfirmPassword ? 'text' : 'password'"
+                  id="reset-confirm"
+                  placeholder="Confirm new password"
+                  class="login-input"
+                  [(ngModel)]="resetConfirm"
+                  name="resetConfirm"
+                  (input)="updateConfirmStatus(resetPassword, resetConfirm)"
+                  required
+                />
+                <button
+                  type="button"
+                  class="toggle-visibility"
+                  (click)="toggleShowResetConfirmPassword()"
+                  [attr.aria-label]="showResetConfirmPassword ? 'Hide password' : 'Show password'"
+                  [attr.title]="showResetConfirmPassword ? 'Hide password' : 'Show password'"
+                >
+                  <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                  <span class="sr-only">{{ showResetConfirmPassword ? 'Hide password' : 'Show password' }}</span>
+                </button>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary login-submit" [disabled]="!passwordValid || !confirmValid || isSubmitting" (click)="submitReset()">Reset Password</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div id="register-panel" role="tabpanel" *ngIf="currentTab === 'register'" aria-labelledby="register-tab">
+        <form class="login-form" (submit)="$event.preventDefault()">
+          <div class="form-group">
+            <label for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" placeholder="Alex Thompson" class="login-input" [(ngModel)]="regName" name="regName" required />
+          </div>
+          <div class="form-group">
+            <label for="reg-email">Email Address</label>
+            <input type="email" id="reg-email" placeholder="alex@example.com" class="login-input" [(ngModel)]="regEmail" name="regEmail" required />
+          </div>
+          <div class="form-group">
+            <label for="reg-password">Password</label>
+            <div class="input-wrap">
+              <input 
+                [type]="showPassword ? 'text' : 'password'" 
+              id="reg-password" 
+              placeholder="Create a strong password" 
+              class="login-input" 
+              (input)="updatePasswordStatus(regPassword)"
+              [(ngModel)]="regPassword"
+              name="regPassword"
+              required />
+              <button
+                type="button"
+                class="toggle-visibility"
+                (click)="toggleShowPassword()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+                [attr.title]="showPassword ? 'Hide password' : 'Show password'"
+              >
+                <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                <span class="sr-only">{{ showPassword ? 'Hide password' : 'Show password' }}</span>
+              </button>
+            </div>
+            <div class="password-hint">
+              <span class="password-rule">At least 8 characters with a letter, number, and symbol.</span>
+              <span class="password-status" [class.valid]="passwordValid">{{ passwordStatus }}</span>
+            </div>
+            <p class="password-error" *ngIf="passwordStatus === 'STRONG-WEAK'">
+              Password must include a letter, number, symbol, and be 8+ characters.
+            </p>
+          </div>
+          <div class="form-group">
+            <label for="reg-confirm-password">Confirm Password</label>
+            <div class="input-wrap">
+              <input 
+                [type]="showConfirmPassword ? 'text' : 'password'" 
+                id="reg-confirm-password"
+                placeholder="Re-enter your password" 
+                class="login-input" 
+                (input)="updateConfirmStatus(regPassword, regConfirm)"
+                [(ngModel)]="regConfirm"
+                name="regConfirm"
+                required />
+              <button
+                type="button"
+                class="toggle-visibility"
+                (click)="toggleShowConfirmPassword()"
+                [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+                [attr.title]="showConfirmPassword ? 'Hide password' : 'Show password'"
+              >
+                <span class="toggle-emoji" aria-hidden="true">&#128584;</span>
+                <span class="sr-only">{{ showConfirmPassword ? 'Hide password' : 'Show password' }}</span>
+              </button>
+            </div>
+            <p class="password-error" *ngIf="confirmStatus === 'NO-MATCH'">
+              Passwords do not match.
+            </p>
+          </div>
+
+          <div class="form-agreement">
+            <label class="agreement-label">
+              <input type="checkbox" [(ngModel)]="regAgreeToPolicies" name="regAgreeToPolicies" />
+              <span>
+                I have read and agree to the <a routerLink="/privacy" (click)="close()">Privacy Policy</a> and
+                <a routerLink="/terms" (click)="close()">Terms &amp; Conditions</a>
+              </span>
+            </label>
+            <p class="password-error" *ngIf="regAgreementError">{{ regAgreementError }}</p>
+          </div>
+          <button 
+            type="submit" 
+            class="btn btn-primary login-submit"
+            [disabled]="!passwordValid || !confirmValid || isSubmitting"
+            (click)="submitRegister()">
+            Create Account
+          </button>
+        </form>
+      </div>
+
+      <div class="login-divider">
+        <span>or</span>
+      </div>
+
+      <button type="button" class="btn btn-ghost guest-btn" (click)="signInAsGuest()">
+        Continue as Guest
+      </button>
+
+      <p class="password-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </section>
+  </div>
+</div>

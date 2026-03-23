@@ -1,0 +1,55 @@
+.tg-cc {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  justify-content: center;
+}
+
+.tg-cc__card {
+  width: min(920px, 100%);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.tg-cc__message {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.tg-cc__link {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.tg-cc__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.tg-cc__btn {
+  min-width: 160px;
+}
+
+@media (max-width: 520px) {
+  .tg-cc__actions {
+    justify-content: stretch;
+  }
+
+  .tg-cc__btn {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
