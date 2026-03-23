@@ -1,9 +1,7 @@
-import { Component, Input, Output, EventEmitter, HostBinding, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostBinding, HostListener, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { IGearItem } from '../../models/gear-item.model';
 import { WishlistService } from '../../services/wishlist.service';
 import { AuthService } from '../../services/auth.service';
-import { UIStateService } from '../../services/uistate.service';
 import { MediaService } from '../../services/media.service';
 
 @Component({
@@ -45,19 +43,11 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     private router: Router,
     private wishlistService: WishlistService,
     private authService: AuthService,
-    private uiService: UIStateService,
     public media: MediaService
   ) {}
 
-  ngOnInit() {
-    this.startColorCycleIfNeeded();
-  }
-
   ngOnDestroy() {
-    if (this.colorCycleTimer) {
-      clearInterval(this.colorCycleTimer);
-      this.colorCycleTimer = null;
-    }
+    this.stopColorCycle();
   }
 
   onViewMore() {
@@ -94,7 +84,6 @@ export class ProductCardComponent implements OnInit, OnDestroy {
   }
 
   togglePopup() {
-    console.log('Toggling popup for:', this.data?.name, 'New state:', !this.showPopup);
     this.showPopup = !this.showPopup;
   }
 
@@ -164,12 +153,38 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     return this.getFootwearColors().length > 1;
   }
 
+  @HostListener('mouseenter')
+  onMouseEnter() {
+    this.startColorCycleIfNeeded();
+  }
+
+  @HostListener('mouseleave')
+  onMouseLeave() {
+    this.stopColorCycle();
+  }
+
+  private stopColorCycle() {
+    if (!this.colorCycleTimer) return;
+    clearInterval(this.colorCycleTimer);
+    this.colorCycleTimer = null;
+    this.colorCycleIndex = 0;
+  }
+
   private startColorCycleIfNeeded() {
+    if (this.colorCycleTimer) return;
     if (!this.minimal || !this.isFootwear()) return;
     const colors = this.getFootwearColors();
     if (colors.length <= 1) return;
+
     const list = colors;
-    this.colorCycleIndex = 0;
+    if (!this.selectedColor) {
+      this.selectedColor = list[0];
+      this.colorCycleIndex = 1;
+    } else {
+      const start = list.indexOf(this.selectedColor);
+      this.colorCycleIndex = start >= 0 ? start + 1 : 0;
+    }
+
     this.colorCycleTimer = setInterval(() => {
       this.selectedColor = list[this.colorCycleIndex % list.length];
       this.colorCycleIndex += 1;
