@@ -1,0 +1,134 @@
+.checkout-wrapper {
+  min-height: 80vh;
+  background-color: #f5f3ef;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 16px;
+}
+
+.checkout-container {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 40px;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* Header */
+.checkout-header {
+  margin-bottom: 32px;
+  border-bottom: 1px solid #e8e3db;
+  padding-bottom: 20px;
+}
+
+.checkout-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a2e1a;
+  margin: 0 0 4px 0;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Order Summary */
+.order-summary {
+  background: #f9f7f4;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.order-summary h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a2e1a;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: #444;
+  border-bottom: 1px solid #ede9e3;
+}
+
+.order-row:last-child {
+  border-bottom: none;
+}
+
+.order-row.total {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #1a2e1a;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid #1a2e1a;
+}
+
+.free {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+/* Payment Section */
+.payment-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a2e1a;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.payment-note {
+  font-size: 0.85rem;
+  color: #888;
+  margin: 0 0 20px 0;
+}
+
+#paypal-button-container {
+  margin-top: 8px;
+}
+
+/* Success / Error Messages */
+.success-msg {
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+.error-msg {
+  background: #ffebee;
+  border: 1px solid #ef9a9a;
+  color: #c62828;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .checkout-container {
+    padding: 24px 16px;
+  }
+
+  .checkout-header h1 {
+    font-size: 1.4rem;
+  }
+}
