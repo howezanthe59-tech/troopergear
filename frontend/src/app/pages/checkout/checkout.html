@@ -1,0 +1,41 @@
+<div class="checkout-wrapper">
+  <div class="checkout-container">
+
+    <div class="checkout-header">
+      <h1>Checkout</h1>
+      <p class="subtitle">Complete your TrooperGear order securely</p>
+    </div>
+
+    <div class="order-summary">
+      <h3>Order Summary</h3>
+      <div class="order-row">
+        <span>Subtotal</span>
+        <span>${{ orderAmount }}</span>
+      </div>
+      <div class="order-row">
+        <span>Shipping</span>
+        <span class="free">Free</span>
+      </div>
+      <div class="order-row total">
+        <span>Total</span>
+        <span>${{ orderAmount }}</span>
+      </div>
+    </div>
+
+    <div class="payment-section">
+      <h3>Payment</h3>
+      <p class="payment-note">All transactions are secure and encrypted.</p>
+
+      <div *ngIf="paymentSuccess" class="success-msg">
+        ✅ Payment successful! Thank you for your order.
+      </div>
+
+      <div *ngIf="paymentError" class="error-msg">
+        ❌ {{ paymentError }}
+      </div>
+
+      <div id="paypal-button-container"></div>
+    </div>
+
+  </div>
+</div>

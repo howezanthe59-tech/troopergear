@@ -10,6 +10,7 @@ const orderRoutes   = require('./routes/orders');
 const adminRoutes   = require('./routes/admin');
 const wishlistRoutes = require('./routes/wishlist');
 const profileRoutes = require('./routes/profile');
+const paypalRoutes = require('./paypal');
 
 const app = express();
 const isProd = process.env.NODE_ENV === 'production';
@@ -45,6 +46,7 @@ app.use('/api/orders',   orderRoutes);
 app.use('/api/admin',    adminRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/profile',  profileRoutes);
+app.use('/api/paypal', paypalRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));

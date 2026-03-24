@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostBinding, HostListener, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostBinding, HostListener, OnDestroy, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
 import { AuthService } from '../../services/auth.service';
@@ -45,6 +45,9 @@ export class ProductCardComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     public media: MediaService
   ) {}
+ngOnInit(): void {
+  // initialization logic can go here later
+}
 
   ngOnDestroy() {
     this.stopColorCycle();
