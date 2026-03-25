@@ -49,7 +49,10 @@ export class CartSidebarComponent implements OnInit {
   }
 
   deleteItem(item: any) {
-    this.cartService.removeItem(item.gearData.id, item.variant);
+    this.cartService.removeItem(item.id!).subscribe({
+  next: () => {},
+  error: err => console.error('Remove item failed', err)
+});
   }
 
   getImgPath(item: any) {

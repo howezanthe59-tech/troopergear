@@ -132,3 +132,27 @@
     font-size: 1.4rem;
   }
 }
+
+.checkout-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.checkout-item-name {
+  font-weight: 700;
+}
+
+.checkout-item-variant,
+.checkout-item-qty {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.checkout-item-price {
+  font-weight: 700;
+  white-space: nowrap;
+}

@@ -8,21 +8,44 @@
 
     <div class="order-summary">
       <h3>Order Summary</h3>
-      <div class="order-row">
-        <span>Subtotal</span>
-        <span>${{ orderAmount }}</span>
+
+      <div *ngIf="cartItems.length > 0; else emptyCart">
+        <div class="checkout-item" *ngFor="let item of cartItems">
+          <div class="checkout-item-info">
+            <div class="checkout-item-name">{{ item.gearData.name }}</div>
+            <div class="checkout-item-variant" *ngIf="getVariantLabel(item)">
+              {{ getVariantLabel(item) }}
+            </div>
+            <div class="checkout-item-qty">
+              Qty: {{ item.quantity }}
+            </div>
+          </div>
+
+          <div class="checkout-item-price">
+            ${{ (getItemPrice(item) * item.quantity).toFixed(2) }}
+          </div>
+        </div>
+
+        <div class="order-row">
+          <span>Subtotal</span>
+          <span>${{ orderAmount }}</span>
+        </div>
+        <div class="order-row">
+          <span>Shipping</span>
+          <span class="free">Free</span>
+        </div>
+        <div class="order-row total">
+          <span>Total</span>
+          <span>${{ orderAmount }}</span>
+        </div>
       </div>
-      <div class="order-row">
-        <span>Shipping</span>
-        <span class="free">Free</span>
-      </div>
-      <div class="order-row total">
-        <span>Total</span>
-        <span>${{ orderAmount }}</span>
-      </div>
+
+      <ng-template #emptyCart>
+        <p>Your cart is empty.</p>
+      </ng-template>
     </div>
 
-    <div class="payment-section">
+    <div class="payment-section" *ngIf="cartItems.length > 0">
       <h3>Payment</h3>
       <p class="payment-note">All transactions are secure and encrypted.</p>
 

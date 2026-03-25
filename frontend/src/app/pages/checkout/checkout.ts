@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { CartService } from '../../services/cart.service';
+import { CartItem } from '../../models/gear-item.model';
 
-declare var paypal: any; // tells TypeScript the global paypal SDK exists
+declare var paypal: any;
 
 @Component({
   selector: 'app-checkout',
@@ -9,36 +11,101 @@ declare var paypal: any; // tells TypeScript the global paypal SDK exists
   styleUrls: ['./checkout.css']
 })
 export class CheckoutComponent implements OnInit {
-  orderAmount = '49.99'; // replace with your dynamic cart total
+  cartItems: CartItem[] = [];
+  orderAmount = '0.00';
   paymentSuccess = false;
   paymentError = '';
+  private apiUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cartService: CartService
+  ) {}
 
   ngOnInit(): void {
-    paypal.Buttons({
-      // Step 1: Create the order on your backend
-      createOrder: () => {
-        return this.http.post<{ id: string }>('/api/paypal/create-order', {
-          amount: this.orderAmount
-        }).toPromise().then(data => data!.id);
-      },
+    console.log('Checkout component loaded');
 
-      // Step 2: Capture after buyer approves
-      onApprove: (data: any) => {
-        return this.http.post<{ status: string }>('/api/paypal/capture-order', {
-          orderID: data.orderID
-        }).toPromise().then(result => {
-          if (result?.status === 'COMPLETED') {
-            this.paymentSuccess = true;
-          }
-        });
+    this.cartService.loadCart().subscribe({
+      next: () => {
+        this.cartItems = this.cartService.getItems();
+        this.updateOrderAmount();
+        setTimeout(() => this.renderPaypalButtons(), 0);
       },
-
-      onError: (err: any) => {
-        this.paymentError = 'Payment failed. Please try again.';
-        console.error(err);
+      error: (err) => {
+        console.error('Failed to load cart', err);
+        this.paymentError = 'Could not load your cart.';
       }
-    }).render('#paypal-button-container');
+    });
   }
+
+  updateOrderAmount(): void {
+    this.orderAmount = this.cartService.getTotal().toFixed(2);
+  }
+
+  getItemPrice(item: CartItem): number {
+    return this.cartService.getItemPrice(item);
+  }
+
+  getVariantLabel(item: CartItem): string {
+    const parts: string[] = [];
+    if (item.variant?.color) parts.push(`Color: ${item.variant.color}`);
+    if (item.variant?.size) parts.push(`Size: ${item.variant.size}`);
+    return parts.join(' | ');
+  }
+
+ renderPaypalButtons(): void {
+  const paypalContainer = document.getElementById('paypal-button-container');
+  if (!paypalContainer) return;
+
+  if (typeof paypal === 'undefined' || !paypal?.Buttons) {
+    console.warn('PayPal SDK not ready yet, retrying...');
+    setTimeout(() => this.renderPaypalButtons(), 500);
+    return;
+  }
+
+  paypalContainer.innerHTML = '';
+
+  paypal.Buttons({
+    createOrder: async () => {
+      const data = await this.http.post<{ id: string }>(
+        `${this.apiUrl}/paypal/create-order`,
+        { amount: this.orderAmount }
+      ).toPromise();
+
+      return data!.id;
+    },
+
+    onApprove: async (data: any) => {
+      try {
+        const result = await this.http.post<{ status: string }>(
+          `${this.apiUrl}/paypal/capture-order`,
+          { orderID: data.orderID }
+        ).toPromise();
+
+        if (result?.status !== 'COMPLETED') {
+          this.paymentError = 'Payment was not completed.';
+          return;
+        }
+
+        await this.http.post(
+          `${this.apiUrl}/orders`,
+          {}
+        ).toPromise();
+
+        this.paymentSuccess = true;
+        this.paymentError = '';
+        this.cartItems = [];
+        this.orderAmount = '0.00';
+      } catch (err) {
+        console.error(err);
+        this.paymentError = 'Payment succeeded, but the order could not be saved.';
+      }
+    },
+
+    onError: (err: any) => {
+      this.paymentError = 'Payment failed. Please try again.';
+      console.error(err);
+    }
+  }).render('#paypal-button-container');
+}
 }

@@ -261,7 +261,10 @@ export class ProductsComponent implements OnInit, AfterViewChecked {
 
 
   addToCart(product: IGearItem, variant?: { color?: string; size?: string }) {
-    this.cartService.addItem(product, variant);
+    this.cartService.addItem(product, variant).subscribe({
+  next: () => {},
+  error: err => console.error('Add to cart failed', err)
+});
   }
 
   addToCartWithVariant(product: IGearItem) {
