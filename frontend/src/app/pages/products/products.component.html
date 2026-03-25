@@ -226,18 +226,23 @@
 </section>
 
 <div
+  #modalOverlay
   class="modal-overlay"
   *ngIf="isDetailsOpen && selectedProduct"
   (click)="closeDetails()"
   role="dialog"
   aria-modal="true"
   [attr.aria-labelledby]="'modal-title-products-' + selectedProduct.id"
+  tabindex="-1"
+  (keydown)="handleModalKeydown($event)"
 >
   <div class="modal-content glass-effect" (click)="$event.stopPropagation()">
     <button
+      #closeBtn
       class="modal-close"
       (click)="closeDetails()"
       aria-label="Close details"
+      type="button"
     >
       &times;
     </button>
@@ -245,17 +250,21 @@
     <div class="modal-grid" *ngIf="selectedProduct as p">
       <div class="modal-image-side">
         <div class="modal-badge-new" *ngIf="p.badge">NEW</div>
-        <img [src]="media.productImageUrl(getSelectedImage(p))" [alt]="p.name" loading="lazy" decoding="async" />
+        <img
+          [src]="media.productImageUrl(getSelectedImage(p))"
+          [alt]="p.name"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
+
       <div class="modal-info-side">
         <span class="modal-meta">{{ p.type }}</span>
         <h2 [id]="'modal-title-products-' + p.id">{{ p.name }}</h2>
         <p class="modal-desc">{{ p.description }}</p>
 
         <ul class="modal-features">
-          <li *ngIf="p.capacity">
-            <span>✅</span> {{ p.capacity }}L capacity
-          </li>
+          <li *ngIf="p.capacity"><span>✅</span> {{ p.capacity }}L capacity</li>
           <li *ngIf="p.type"><span>✅</span> Premium {{ p.type }} build</li>
           <li><span>✅</span> Weather-resistant material</li>
           <li><span>✅</span> Lifetime warranty</li>

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
@@ -14,7 +14,7 @@ import { XmlProductFeedService } from '../../services/xml-product-feed.service';
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css']
 })
-export class ProductsComponent implements OnInit {
+export class ProductsComponent implements OnInit, AfterViewChecked {
   private readonly flashlightLargePrice = 24.99;
   private readonly flashlightSmallPrice = 19.99;
   products: IGearItem[] = [];
@@ -25,7 +25,7 @@ export class ProductsComponent implements OnInit {
   selectedSize = '';
   selectedColor: '' | string = '';
   selectedBagColor: '' | 'Green' | 'Black' = '';
-  
+
   // Filters
   searchTerm = '';
   selectedCategory = 'all';
@@ -41,6 +41,11 @@ export class ProductsComponent implements OnInit {
   isLoggedIn = false;
   dataSource: 'api' | 'xml' = 'api';
   feedStatus = '';
+  @ViewChild('modalOverlay') modalOverlay?: ElementRef<HTMLDivElement>;
+  @ViewChild('closeBtn') closeBtn?: ElementRef<HTMLButtonElement>;
+
+  private lastFocusedElement: HTMLElement | null = null;
+  private shouldFocusModal = false;
 
   constructor(
     private productService: ProductService,
@@ -58,6 +63,13 @@ export class ProductsComponent implements OnInit {
     this.authService.isLoggedIn$.subscribe(state => {
       this.isLoggedIn = state;
     });
+  }
+
+   ngAfterViewChecked(): void {
+    if (this.shouldFocusModal && this.closeBtn) {
+      this.closeBtn.nativeElement.focus();
+      this.shouldFocusModal = false;
+    }
   }
 
   loadProductsFromApi() {
@@ -132,8 +144,8 @@ export class ProductsComponent implements OnInit {
       // 1. Multi-field search check
       const searchLower = this.searchTerm.toLowerCase();
       const activityLabel = this.getProductActivity(p).toLowerCase();
-      const matchesSearch = 
-        p.name.toLowerCase().includes(searchLower) || 
+      const matchesSearch =
+        p.name.toLowerCase().includes(searchLower) ||
         p.description.toLowerCase().includes(searchLower) ||
         p.type.toLowerCase().includes(searchLower) ||
         activityLabel.includes(searchLower); // Include derived activity in search results
@@ -149,10 +161,10 @@ export class ProductsComponent implements OnInit {
 
       // 3. Range-based price check
       const matchesPrice = p.price >= this.minPrice && p.price <= this.maxPrice;
-      
+
       return matchesSearch && matchesCategory && matchesActivity && matchesPrice;
     });
-    
+
     // Update live results count for accessibility (ARIA live regions)
     this.resultsFound = this.filteredProducts.length;
   }
@@ -303,12 +315,15 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  openDetails(product: IGearItem) {
+   openDetails(product: IGearItem) {
+    this.lastFocusedElement = document.activeElement as HTMLElement;
+
     this.selectedProduct = product;
     this.isDetailsOpen = true;
     this.selectedSize = '';
     this.selectedColor = '';
     this.selectedBagColor = '';
+    this.shouldFocusModal = true;
 
     if (product.type === 'Footwear') {
       const colors = this.getFootwearColors(product);
@@ -318,8 +333,14 @@ export class ProductsComponent implements OnInit {
     }
   }
 
-  closeDetails() {
+    closeDetails() {
     this.isDetailsOpen = false;
+    this.selectedProduct = null;
+
+    if (this.lastFocusedElement) {
+      this.lastFocusedElement.focus();
+      this.lastFocusedElement = null;
+    }
   }
 
   isSelectedFootwear() {
@@ -333,7 +354,7 @@ export class ProductsComponent implements OnInit {
   hasSelectedBackpackOptions() {
     return this.isSelectedBackpack() && (this.selectedProduct?.id === 4 || this.selectedProduct?.id === 6);
   }
-  
+
   isSelectedFlashlight() {
     return this.selectedProduct?.name === 'TrailBeam Flashlight';
   }
@@ -423,6 +444,55 @@ export class ProductsComponent implements OnInit {
       return false;
     }
     return this.getFootwearColors(this.selectedProduct).length > 1;
+  }
+
+    handleModalKeydown(event: KeyboardEvent): void {
+    if (!this.modalOverlay) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeDetails();
+      return;
+    }
+
+    if (event.key !== 'Tab') return;
+
+    const focusableElements = this.getFocusableElements(this.modalOverlay.nativeElement);
+
+    if (!focusableElements.length) {
+      event.preventDefault();
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    const activeElement = document.activeElement as HTMLElement;
+
+    if (event.shiftKey) {
+      if (activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      }
+    } else {
+      if (activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    }
+  }
+
+  private getFocusableElements(container: HTMLElement): HTMLElement[] {
+    const selectors = [
+      'a[href]',
+      'button:not([disabled])',
+      'textarea:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])'
+    ];
+
+    return Array.from(container.querySelectorAll<HTMLElement>(selectors.join(',')))
+      .filter(el => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
   }
 
   @HostListener('document:keydown.escape')
