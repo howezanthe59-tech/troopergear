@@ -245,7 +245,7 @@
     <div class="modal-grid" *ngIf="selectedProduct as p">
       <div class="modal-image-side">
         <div class="modal-badge-new" *ngIf="p.badge">NEW</div>
-        <img [src]="media.productImageUrl(getSelectedImage(p))" [alt]="p.name" loading="eager" decoding="async" />
+        <img [src]="media.productImageUrl(getSelectedImage(p))" [alt]="p.name" loading="lazy" decoding="async" />
       </div>
       <div class="modal-info-side">
         <span class="modal-meta">{{ p.type }}</span>
@@ -254,11 +254,11 @@
 
         <ul class="modal-features">
           <li *ngIf="p.capacity">
-            <span>Check</span> {{ p.capacity }}L capacity
+            <span>✅</span> {{ p.capacity }}L capacity
           </li>
-          <li *ngIf="p.type"><span>Check</span> Premium {{ p.type }} build</li>
-          <li><span>Check</span> Weather-resistant material</li>
-          <li><span>Check</span> Lifetime warranty</li>
+          <li *ngIf="p.type"><span>✅</span> Premium {{ p.type }} build</li>
+          <li><span>✅</span> Weather-resistant material</li>
+          <li><span>✅</span> Lifetime warranty</li>
         </ul>
 
         <div class="modal-footer-row">

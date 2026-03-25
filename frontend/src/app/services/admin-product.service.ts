@@ -23,13 +23,16 @@ export class AdminProductService {
   private authHeaders(): HttpHeaders {
     const token = localStorage.getItem('auth_token') || '';
     return new HttpHeaders({
-      Authorization: token ? `Bearer ${token}` : ''
+      Authorization: token ? `Bearer ${token}` : '',
+      'Cache-Control': 'no-cache, no-store, must-revalidate', // ✅ added
+      'Pragma': 'no-cache'                                     // ✅ added
     });
   }
 
   list(): Observable<AdminProduct[]> {
     return this.http.get<AdminProduct[]>(`${this.apiUrl}/products`, {
-      headers: this.authHeaders()
+      headers: this.authHeaders(),
+      params: { _t: Date.now().toString() } // ✅ added
     });
   }
 

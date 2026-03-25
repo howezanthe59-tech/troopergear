@@ -15,6 +15,18 @@ const paypalRoutes = require('./paypal');
 const app = express();
 const isProd = process.env.NODE_ENV === 'production';
 
+// Cache static assets for 1 year
+app.use('/uploads', express.static('uploads', {
+  maxAge: '1y',
+  immutable: true
+}));
+// Cache API responses for 5 minutes
+app.use((req, res, next) => {
+  if (req.method === 'GET' && req.path.startsWith('/api/products')) {
+    res.set('Cache-Control', 'public, max-age=300');
+  }
+  next();
+});
 // Middleware
 app.use(cors({
   origin: (origin, callback) => {

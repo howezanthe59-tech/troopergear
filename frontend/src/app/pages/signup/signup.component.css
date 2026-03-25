@@ -100,26 +100,12 @@
   color: #1b4332;
   font-weight: 800;
   font-size: 1.15rem;
-  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', system-ui, sans-serif;
-  font-variant-emoji: emoji;
   line-height: 1;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: background 160ms ease, transform 160ms ease, color 160ms ease;
-}
-
-.signup-form .toggle-visibility .toggle-icon {
-  width: 22px;
-  height: 22px;
-  display: block;
-}
-
-.signup-form .toggle-visibility .toggle-emoji {
-  font-size: 1.35rem;
-  line-height: 1;
-  display: block;
 }
 
 .signup-form .toggle-visibility:hover {

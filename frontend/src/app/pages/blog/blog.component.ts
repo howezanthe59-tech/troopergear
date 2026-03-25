@@ -25,7 +25,7 @@ export class BlogComponent {
       date: 'March 2026',
       category: 'Guides',
       readTime: '4 min read',
-      image: '/assets/media/vecteezy_hikers-traverse-a-forested-stream-in-rain_52396330.jpg',
+      image: '/assets/media/Hiking.webp',
       imageAlt: 'Hikers crossing a stream in a forest',
       excerpt:
         'A simple packing list for steep climbs, changing weather, and long descents—tested on Jamaica’s most popular route.',
