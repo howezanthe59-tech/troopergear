@@ -58,7 +58,7 @@ export class BlogComponent {
       date: 'March 2026',
       category: 'Gear',
       readTime: '5 min read',
-      image: '/assets/media/tent.jpeg',
+      image: '/assets/media/tent.webp',
       imageAlt: 'A tent set up at a campsite',
       excerpt:
         'A quick guide to space, weight, and setup time—so you choose a shelter that fits your trip.',

@@ -672,12 +672,20 @@
 /* Toasts */
 .toast-stack {
   position: fixed;
-  top: 1.25rem;
-  right: 1.25rem;
+  top: 90px;
+  right: 16px;
+  left: 16px;
   display: grid;
   gap: 0.75rem;
-  z-index: 50;
-  width: min(420px, calc(100vw - 2.5rem));
+  z-index: 9999;
+  width: auto;
+  max-width: 420px;
+  margin-left: auto;
+  pointer-events: none;
+}
+
+.toast-stack > * {
+  pointer-events: auto;
 }
 
 .toast {
